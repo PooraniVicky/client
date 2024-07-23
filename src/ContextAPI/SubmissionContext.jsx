@@ -99,6 +99,7 @@ export const SubmissionProvider = ({ children }) => {
             });
             console.log("Submission Post:", response.data);
             setSubmissions(prevSubmissions => [...prevSubmissions, response.data]);
+            
         } catch (err) {
             console.error('Error submitting assignment:', err);
             setError('Failed to submit assignment.');

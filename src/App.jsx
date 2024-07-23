@@ -10,7 +10,7 @@ import { EnrollmentProvider } from './ContextAPI/EnrollmentContext';
 import { AssignmentProvider } from './ContextAPI/AssignmentContext';
 import { LessonProvider } from './ContextAPI/LessonContext';
 import { QuizProvider } from './ContextAPI/QuizContext';
-import { SubmissionProvider } from './ContextAPI/SubmissionContext';
+import { AssignmentSubmissionProvider } from './ContextAPI/AssignmentSubmissionContext';
 import { QueryProvider } from './ContextAPI/QueryContext';
 
 //Pages
@@ -68,7 +68,7 @@ function App() {
           <QuizProvider>
             <EnrollmentProvider>
               <AssignmentProvider>
-                  <SubmissionProvider>
+                  <AssignmentSubmissionProvider>
                     <QueryProvider>
                   <Router>
                     <Header />
@@ -115,7 +115,7 @@ function App() {
                     <Footer />
                   </Router>
                   </QueryProvider>
-                </SubmissionProvider>
+                </AssignmentSubmissionProvider>
               </AssignmentProvider>
             </EnrollmentProvider>
           </QuizProvider>

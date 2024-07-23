@@ -1,28 +1,20 @@
+
 import React, { useContext } from 'react';
 import { useFormik } from 'formik';
-import { SubmissionContext } from '../ContextAPI/SubmissionContext';
+import { AssignmentSubmissionContext } from '../ContextAPI/AssignmentSubmissionContext';
 import { message } from 'antd';
 
 const SubmissionForm = ({ assignmentId }) => {
-    const { addSubmission, fetchSubmissionsByAssignmentId } = useContext(SubmissionContext); // Accessing submitSubmission from SubmissionContext
+    const { submitAssignment, fetchSubmissionsByAssignment } = useContext(AssignmentSubmissionContext); // Accessing submitSubmission from SubmissionContext
 
     const formik = useFormik({
         initialValues: {
             submissionUrl: ''
         },
-        // onSubmit: async (values, { resetForm }) => {
-        //     const submissionData = {
-        //         assignment: assignmentId,
-        //         student: studentId,
-        //         submissionUrl: values.submissionUrl,
-        //     };
-        //     await addSubmission(submissionData);
-        //     resetForm();
-        // },
         onSubmit: async (values, { setSubmitting }) => {
             try {
-                await addSubmission(assignmentId, values); 
-                await fetchSubmissionsByAssignmentId(assignmentId);
+                await submitAssignment(assignmentId, values.submissionUrl); 
+                await fetchSubmissionsByAssignment(assignmentId);
                 message.success('Submission successful.');
             } catch (error) {
                 console.error('Error submitting assignment:', error);
