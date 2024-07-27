@@ -1,65 +1,43 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AssignmentContext } from '../ContextAPI/AssignmentContext';
 import { AuthContext } from '../ContextAPI/AuthContext';
-import { AssignmentSubmissionContext } from '../ContextAPI/AssignmentSubmissionContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { message } from 'antd';
 import { Container, Row, Col } from 'react-bootstrap';
-import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, IconButton, Box, Collapse, Typography } from '@mui/material';
+import { Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Box, Collapse, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { AiOutlineDown, AiOutlineUp, AiOutlineInfoCircle } from 'react-icons/ai';
 import SubmissionForm from './SubmissionForm';
 
 const AssignmentList = () => {
-    const { fetchAssignmentsByCourseId, deleteAssignment, assignments, loading: assignmentLoading } = useContext(AssignmentContext);
+    const { fetchAssignmentsByCourseId, deleteAssignment, assignments, submissions, loading: assignmentLoading, fetchAssignmentByAssignmentId, addSubmission } = useContext(AssignmentContext);
     const { users } = useContext(AuthContext);
-    const { submissions, fetchSubmissionsByAssignment } = useContext(AssignmentSubmissionContext);
     const { courseId } = useParams();
-    const [showSubmissionForm, setShowSubmissionForm] = useState({});
+    const [expandedAssignmentId, setExpandedAssignmentId] = useState(null);
+    const [showSubmissionUrl, setShowSubmissionUrl] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (courseId) {
-            fetchAssignmentsByCourseId(courseId);
-        }
-    }, [courseId]);
-
-    
-
-    useEffect(() => {
-        console.log("Fetch Trigger:", assignments, submissions);
-        if (assignments && assignments.length > 0) {
-            assignments.forEach(async (assignment) => {
+            const fetchData = async () => {
                 try {
-                    await fetchSubmissionsByAssignment(assignment._id);
+                    await fetchAssignmentsByCourseId(courseId);
                 } catch (error) {
-                    console.error('Error fetching submissions for assignment:', assignment._id, error);
-                    message.error(`Failed to fetch submissions for assignment: ${assignment.title}`);
+                    console.error('Error fetching assignments:', error);
                 }
-            });
+            };
+
+            fetchData();
         }
     }, []);
-
-    // useEffect(() => {
-    //     console.log('Assignments:', assignments);
-    //     console.log('Submissions:', submissions);
-    // }, [assignments, submissions]);
-
-    const toggleSubmissionForm = (assignmentId) => {
-        setShowSubmissionForm(prevState => ({
-            ...prevState,
-            [assignmentId]: !prevState[assignmentId]
-        }));
-    };
 
     const handleDeleteAssignment = async (assignmentId) => {
         try {
             await deleteAssignment(assignmentId);
             message.success('Assignment deleted successfully!');
-            fetchAssignmentsByCourseId(courseId);
+            fetchAssignmentsByCourseId(courseId); // Refresh assignments
         } catch (error) {
             console.error('Error deleting assignment:', error);
-            message.error('Assignment failed to delete.');
+            message.error('Failed to delete assignment.');
         }
     };
 
@@ -69,7 +47,7 @@ const AssignmentList = () => {
 
     const handleViewSubmissionsList = async (assignmentId) => {
         try {
-            await fetchSubmissionsByAssignment(assignmentId);
+            await fetchAssignmentByAssignmentId(assignmentId);
             navigate(`/submissionList/${assignmentId}`);
         } catch (error) {
             console.error('Error fetching submissions:', error);
@@ -77,26 +55,30 @@ const AssignmentList = () => {
         }
     };
 
-    // const handleSubmitSubmissionForm = async (assignmentId, formData) => {
-    //     try {
-    //         message.success('Submission saved successfully!');
-    //         await fetchSubmissionsByAssignmentId(assignmentId);
-    //         toggleSubmissionForm(assignmentId);
-    //     } catch (error) {
-    //         console.error('Error saving submission:', error);
-    //         message.error('Failed to save submission.');
-    //     }
-    // };
-
     const getSubmissionForAssignment = (assignmentId) => {
-        if (!Array.isArray(submissions)) {
-            console.log(Array.isArray(submissions)); // This should log true if submissions is an array
-            console.log(submissions);
-          console.error('Expected submissions to be an array');
-          return null;
-        }
         return submissions.find(submission => submission.assignmentId === assignmentId);
-      };
+    };
+
+    const handleSubmitSubmissionForm = async (assignmentId, formData) => {
+        try {
+            await addSubmission(assignmentId, formData);
+            message.success('Submission added successfully!');
+            fetchAssignmentsByCourseId(courseId); // Refresh assignments
+        } catch (error) {
+            console.error('Error submitting assignment:', error);
+            message.error('Failed to submit assignment.');
+        }
+    };
+
+    const handleViewClick = async (assignmentId) => {
+        try {
+            await fetchAssignmentByAssignmentId(assignmentId);
+            setShowSubmissionUrl(prevState => (prevState === assignmentId ? null : assignmentId));
+        } catch (error) {
+            console.error('Error fetching assignment:', error);
+            message.error('Failed to fetch assignment.');
+        }
+    };
 
     return (
         <Container>
@@ -134,70 +116,59 @@ const AssignmentList = () => {
                                 <TableCell colSpan={8} align="center">No assignments available.</TableCell>
                             </TableRow>
                         ) : (
-                            assignments.map((assignment) => (
-                                <React.Fragment key={assignment._id}>
-                                    <TableRow>
-                                        <TableCell component="th" scope="row">
-                                            {assignment.title}
-                                        </TableCell>
-                                        <TableCell align="center">{assignment.description}</TableCell>
-                                        <TableCell align="center">{new Date(assignment.dueDate).toLocaleDateString()}</TableCell>
-                                        {users && (users.role === 'student') && (
-                                            <TableCell align="center">{getSubmissionForAssignment(assignment._id)?.createdAt ? new Date(getSubmissionForAssignment(assignment._id).createdAt).toLocaleDateString() : '-'}</TableCell>
-                                        )}
-                                        {users && (users.role === 'student') && (
-                                            <TableCell align="center">{getSubmissionForAssignment(assignment._id)?.grade ? getSubmissionForAssignment(assignment._id).grade : '-'}</TableCell>
-                                        )}
-                                        {users && (users.role === 'student') && (
-                                            <TableCell align="center">{getSubmissionForAssignment(assignment._id)?.comments ? getSubmissionForAssignment(assignment._id).comments : '-'}</TableCell>
-                                        )}
-                                        {users && (users.role === 'student') && (
-                                            <TableCell align="center">
-                                                {getSubmissionForAssignment(assignment._id) ? (
-                                                    <>
-                                                        <IconButton color="warning" size="small" onClick={() => toggleSubmissionForm(assignment._id)}>
-                                                            <AiOutlineInfoCircle />
-                                                        </IconButton>
-                                                        <IconButton
-                                                            aria-label="expand submission form"
-                                                            size="small"
-                                                            onClick={() => toggleSubmissionForm(assignment._id)}
-                                                        >
-                                                            {showSubmissionForm[assignment._id] ? <AiOutlineUp /> : <AiOutlineDown />}
-                                                        </IconButton>
-                                                    </>
-                                                ) : (
-                                                    <button className="btn btn-primary" onClick={() => toggleSubmissionForm(assignment._id)}>Submit</button>
-                                                )}
+                            assignments.map((assignment) => {
+                                const submission = getSubmissionForAssignment(assignment._id);
+
+                                return (
+                                    <React.Fragment key={assignment._id}>
+                                        <TableRow>
+                                            <TableCell component="th" scope="row">
+                                                {assignment.title}
                                             </TableCell>
-                                        )}
-                                        {users && (users.role === 'admin' || users.role === 'instructor') && (
-                                            <TableCell align="center">
-                                                <button className="btn btn-danger ms-2 me-2 mt-2" onClick={() => handleDeleteAssignment(assignment._id)}>Delete</button>
-                                                <button className="btn btn-dark ms-2 me-2 mt-2" onClick={() => handleViewSubmissionsList(assignment._id)}>View Submissions</button>
+                                            <TableCell align="center">{assignment.description}</TableCell>
+                                            <TableCell align="center">{new Date(assignment.dueDate).toLocaleDateString()}</TableCell>
+                                            {users && (users.role === 'student') && (
+                                                <>
+                                                    <TableCell align="center">{submission?.createdAt ? new Date(submission.createdAt).toLocaleDateString() : '-'}</TableCell>
+                                                    <TableCell align="center">{submission?.grade ? submission.grade : '-'}</TableCell>
+                                                    <TableCell align="center">{submission?.comments ? submission.comments : '-'}</TableCell>
+                                                    <TableCell align="center">
+                                                        {submission ? (
+                                                            <button className="btn btn-secondary" onClick={() => handleViewClick(assignment._id)}>
+                                                                {showSubmissionUrl === assignment._id ? 'Hide URL' : 'View'}
+                                                            </button>
+                                                        ) : (
+                                                            <button className="btn btn-primary" onClick={() => setExpandedAssignmentId(assignment._id)}>Submit</button>
+                                                        )}
+                                                    </TableCell>
+                                                </>
+                                            )}
+                                            {users && (users.role === 'admin' || users.role === 'instructor') && (
+                                                <TableCell align="center">
+                                                    <button className="btn btn-danger ms-2 me-2 mt-2" onClick={() => handleDeleteAssignment(assignment._id)}>Delete</button>
+                                                    <button className="btn btn-dark ms-2 me-2 mt-2" onClick={() => handleViewSubmissionsList(assignment._id)}>View Submissions</button>
+                                                </TableCell>
+                                            )}
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+                                                <Collapse in={expandedAssignmentId === assignment._id} timeout="auto" unmountOnExit>
+                                                    <Box margin={1}>
+                                                        <Typography variant="h6" gutterBottom component="div">
+                                                            {submission ? 'Submission Details' : 'Submit Assignment'}
+                                                        </Typography>
+                                                        {submission ? (
+                                                            <p>URL: {submission.submissionUrl}</p>
+                                                        ) : (
+                                                            <SubmissionForm assignmentId={assignment._id} onSubmit={(formData) => handleSubmitSubmissionForm(assignment._id, formData)} />
+                                                        )}
+                                                    </Box>
+                                                </Collapse>
                                             </TableCell>
-                                        )}
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
-                                            <Collapse in={showSubmissionForm[assignment._id]} timeout="auto" unmountOnExit>
-                                                <Box margin={1}>
-                                                    <Typography variant="h6" gutterBottom component="div">
-                                                        {getSubmissionForAssignment(assignment._id) ? 'Submission Details' : 'Submit Assignment'}
-                                                    </Typography>
-                                                    {getSubmissionForAssignment(assignment._id) ? (
-                                                        <>
-                                                            <p>URL: {getSubmissionForAssignment(assignment._id).submissionUrl}</p>
-                                                        </>
-                                                    ) : (
-                                                        <SubmissionForm assignmentId={assignment._id} onSubmit={(formData) => handleSubmitSubmissionForm(assignment._id, formData)} />
-                                                    )}
-                                                </Box>
-                                            </Collapse>
-                                        </TableCell>
-                                    </TableRow>
-                                </React.Fragment>
-                            ))
+                                        </TableRow>
+                                    </React.Fragment>
+                                );
+                            })
                         )}
                     </TableBody>
                 </Table>
@@ -207,5 +178,3 @@ const AssignmentList = () => {
 };
 
 export default AssignmentList;
-
-

@@ -176,24 +176,25 @@ export const AssignmentSubmissionProvider = ({ children }) => {
         }
     };
 
-    const fetchSubmissionsByAssignment = async (assignmentId) => {
-        setLoading(true);
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`http://localhost:4000/apiSubmissions/assignment/${assignmentId}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+    // const fetchSubmissionsByAssignment = async (assignmentId) => {
+    //     setLoading(true);
+    //     try {
+    //         const token = localStorage.getItem('token');
+    //         const response = await axios.get(`http://localhost:4000/apiSubmissions/assignment/${assignmentId}`, {
+    //             headers: { Authorization: `Bearer ${token}` },
+    //         });
 
-            console.log(response.data); // Log the raw response
-            const { submissions } = response.data;
-            console.log(Array.isArray(submissions) ? submissions : 'No submissions available');
-            setSubmissions(submissions);
-        } catch (err) {
-            setError(err.response?.data?.message || 'An error occurred while fetching submissions.');
-        } finally {
-            setLoading(false);
-        }
-    };
+    //         console.log(response.data); // Log the raw response
+    //         const { submissions } = response.data;
+    //         console.log(Array.isArray(submissions) ? submissions : 'No submissions available');
+            
+    //         setSubmissions(submissions);
+    //     } catch (err) {
+    //         setError(err.response?.data?.message || 'An error occurred while fetching submissions.');
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     const deleteSubmission = async (submissionId) => {
         try {
@@ -220,7 +221,7 @@ export const AssignmentSubmissionProvider = ({ children }) => {
     const gradeSubmission = async (submissionId, gradeData) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:4000/apiSubmissions/${submissionId}`, gradeData, {
+            await axios.put(`http://localhost:4000/apiSubmissions/${submissionId}/grade`, gradeData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
         } catch (err) {
@@ -236,7 +237,7 @@ export const AssignmentSubmissionProvider = ({ children }) => {
                 loading,
                 error,
                 fetchSubmissionsByCourse,
-                fetchSubmissionsByAssignment,
+                //fetchSubmissionsByAssignment,
                 deleteSubmission,
                 submitAssignment,
                 gradeSubmission,

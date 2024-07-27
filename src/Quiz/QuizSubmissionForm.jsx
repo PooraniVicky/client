@@ -1,169 +1,50 @@
-// import React, { useState, useContext, useEffect } from 'react';
-// import { QuizContext } from '../ContextAPI/QuizContext';
-// import axios from 'axios';
-// import { useParams } from 'react-router-dom';
-
-// const QuizSubmissionForm = ({quizId, onGradeSubmit}) => {
-//   const { fetchQuizById } = useContext(QuizContext);
-//   // const {quizId} = useParams;
-//   const [quiz, setQuiz] = useState(null);
-//   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-//   const [answers, setAnswers] = useState([]);
-//   const [score, setScore] = useState(null);
-//   const [isSubmitted, setIsSubmitted] = useState(false);
-// console.log("Quiz Id:", quizId);
-//   // useEffect(() => {
-//   //   const getQuiz = async () => {
-//   //     try {
-//   //       const quizData = await fetchQuizById(quizId);
-//   //       setQuiz(quizData);
-//   //       setAnswers(new Array(quizData.questions.length).fill(null));
-//   //     } catch (error) {
-//   //       console.error('Error fetching quizById:', error);
-//   //     }
-//   //   };
-
-//   //   getQuiz();
-//   // }, []);
-//   useEffect(() => {
-//     const getQuiz = async () => {
-//         try {
-//             if (!quizId) {
-//                 throw new Error('Quiz ID is required');
-//             }
-//             const quizData = await fetchQuizById(quizId);
-//             setQuiz(quizData);
-//         } catch (err) {
-//             console.error(err.message);
-//         }
-//     };
-
-//     getQuiz();
-// }, [quizId]);
-
-//   if (!quiz) return <div>Loading...</div>;
-
-//   const handleAnswerChange = (index, selectedOption) => {
-//     const newAnswers = [...answers];
-//     newAnswers[index] = selectedOption;
-//     setAnswers(newAnswers);
-//   };
-
-//   const handleSubmit = async () => {
-//     try {
-//       const response = await axios.post(`http://localhost:4000/apiQuizzes/${quizId}/grade`, { answers }, {
-//         headers: {
-//           'Content-Type': 'application/json',
-//           Authorization: `Bearer ${localStorage.getItem('token')}`,
-//         },
-//       });
-//       setScore(response.data.score);
-//       setIsSubmitted(true);
-//     } catch (error) {
-//       console.error('Error submitting quiz:', error);
-//     }
-//   };
-
-//   const currentQuestion = quiz.questions[currentQuestionIndex];
-
-//   return (
-//     <div>
-//       <h2>{quiz.title}</h2>
-//       <div>
-//         <h3>{currentQuestion.questionText}</h3>
-//         {currentQuestion.options.map((option, index) => (
-//           <div key={index}>
-//             <label>
-//               <input
-//                 type="radio"
-//                 name={`question-${currentQuestionIndex}`}
-//                 value={option}
-//                 checked={answers[currentQuestionIndex] === option}
-//                 onChange={() => handleAnswerChange(currentQuestionIndex, option)}
-//               />
-//               {option}
-//             </label>
-//           </div>
-//         ))}
-//       </div>
-//       <div>
-//         {currentQuestionIndex > 0 && (
-//           <button onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}>Previous</button>
-//         )}
-//         {currentQuestionIndex < quiz.questions.length - 1 && (
-//           <button onClick={() => setCurrentQuestionIndex(currentQuestionIndex + 1)}>Save & Next</button>
-//         )}
-//         {currentQuestionIndex === quiz.questions.length - 1 && (
-//           <button onClick={handleSubmit}>Submit Quiz</button>
-//         )}
-//       </div>
-//       {isSubmitted && (
-//         <div>
-//           <h3>Quiz Submitted</h3>
-//           <p>Score: {score}</p>
-//           <p>Correct Answers: {answers.filter((answer, index) => answer === quiz.questions[index].correctAnswer).length} / {quiz.questions.length}</p>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default QuizSubmissionForm;
 import React, { useState, useEffect, useContext } from 'react';
 import { QuizContext } from '../ContextAPI/QuizContext';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, TextField, Typography } from '@mui/material';
+import { Button, RadioGroup, FormControlLabel, Radio, Typography, Container, Grid, Card, CardContent } from '@mui/material';
+import { message } from 'antd';
 
-const QuizSubmissionForm = ({ quizId }) => {
-    const { fetchQuizById, submitQuiz } = useContext(QuizContext);
+const QuizSubmissionForm = () => {
+    const { quizId } = useParams();
+    const { fetchQuizById, updateQuizGrade } = useContext(QuizContext);
     const [quiz, setQuiz] = useState(null);
     const [answers, setAnswers] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [loading, setLoading] = useState(true);
-
+    const [score, setScore] = useState(0);
     const navigate = useNavigate();
-    const { courseId } = useParams();
-
-    // useEffect(() => {
-    //     const loadQuiz = async () => {
-    //         try {
-    //             const fetchedQuiz = await fetchQuizById(quizId);
-    //             setQuiz(fetchedQuiz);
-    //             setAnswers(Array(fetchedQuiz.questions.length).fill(''));
-    //             setLoading(false);
-    //         } catch (error) {
-    //             console.error('Error fetching quiz:', error);
-    //             setLoading(false);
-    //         }
-    //     };
-    //     loadQuiz();
-    // }, [quizId, fetchQuizById]);
-
 
     useEffect(() => {
-      const loadQuiz = async () => {
-          try {
-            if (!quizId) {
-                throw new Error("Quiz ID is required");
+        const loadQuiz = async () => {
+            try {
+                if (!quizId) throw new Error("Quiz ID is required");
+                const fetchedQuiz = await fetchQuizById(quizId);
+                if (fetchedQuiz && fetchedQuiz.data && fetchedQuiz.data.quiz) {
+                    const quizData = fetchedQuiz.data.quiz;
+                    if (quizData.questions && quizData.questions.length > 0) {
+                        setQuiz(quizData);
+                        setAnswers(Array(quizData.questions.length).fill(''));
+                    } else {
+                        console.error('Fetched quiz does not have questions:', quizData);
+                        setQuiz(null);
+                    }
+                } else {
+                    console.error('Fetched quiz data is incomplete:', fetchedQuiz);
+                    setQuiz(null);
+                }
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching quiz:', error);
+                setLoading(false);
             }
-              const fetchedQuiz = await fetchQuizById(quizId);
-              if (fetchedQuiz && fetchedQuiz.questions) {
-                  setQuiz(fetchedQuiz);
-                  setAnswers(Array(fetchedQuiz.questions.length).fill(''));
-              } else {
-                  console.error('Fetched quiz does not have questions:', fetchedQuiz);
-              }
-              setLoading(false);
-          } catch (error) {
-              console.error('Error fetching quiz:', error);
-              setLoading(false);
-          }
-      };
-      loadQuiz();
-  }, [quizId, fetchQuizById]);
+        };
+        loadQuiz();
+    }, []);
+
     const handleAnswerChange = (e) => {
+        const selectedOptionIndex = parseInt(e.target.value, 10);
         const updatedAnswers = [...answers];
-        updatedAnswers[currentQuestionIndex] = e.target.value;
+        updatedAnswers[currentQuestionIndex] = selectedOptionIndex;
         setAnswers(updatedAnswers);
     };
 
@@ -181,49 +62,91 @@ const QuizSubmissionForm = ({ quizId }) => {
 
     const handleSubmitQuiz = async () => {
         try {
-            await submitQuiz(quizId, answers);
-            navigate(`/quiz-result/${quizId}`);
+            let calculatedScore = 0;
+
+            quiz.questions.forEach((question, index) => {
+                if (answers[index] === question.correctAnswer) {
+                    calculatedScore += 5; // Assuming 5 points per correct answer
+                }
+            });
+
+            setScore(calculatedScore);
+
+            // Show success message using Ant Design's message component
+            message.success(`Quiz submitted! Your total score is ${calculatedScore}.`);
+
+            const submissions = quiz.questions.map((question, index) => ({
+                questionId: question._id,
+                selectedOption: answers[index],
+                score: calculatedScore,
+            }));
+
+            const result = await updateQuizGrade(quiz._id, submissions);
+            console.log('Quiz submission result:', result); // Log the result to debug
+
+            navigate('/student-dashboard');
         } catch (error) {
-            console.error('Error submitting quiz:', error);
+            console.error('Error updating quiz grade:', error);
+            message.error('Failed to submit quiz. Please try again.');
         }
     };
 
     if (loading) {
         return <Typography>Loading...</Typography>;
     }
-
-    if (!quiz) {
-        return <Typography>Quiz not found.</Typography>;
+    if (!quiz || !quiz.questions || quiz.questions.length === 0) {
+        return <Typography>Quiz not found or has no questions.</Typography>;
     }
 
     return (
-        <div>
-            <Typography variant="h5">{quiz.title}</Typography>
-            {quiz.questions && quiz.questions.length > 0 && (
-                <div>
-                    <Typography variant="h6">Question {currentQuestionIndex + 1}</Typography>
-                    <Typography>{quiz.questions[currentQuestionIndex].questionText}</Typography>
-                    <TextField
+        <Container className='container py-5'>
+            <Card variant="outlined" style={{ color: 'white', backgroundColor: '#333' }}>
+                <CardContent>
+                    <Typography variant="h4" gutterBottom>
+                        {quiz.title}
+                    </Typography>
+                    <Typography variant="h6">
+                        Question {currentQuestionIndex + 1}
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                        {quiz.questions[currentQuestionIndex].questionText}
+                    </Typography>
+                    <RadioGroup
                         value={answers[currentQuestionIndex]}
                         onChange={handleAnswerChange}
-                        multiline
-                        rows={4}
-                        variant="outlined"
-                        fullWidth
-                    />
-                    <div>
-                        {currentQuestionIndex > 0 && (
-                            <Button onClick={handlePreviousQuestion}>Previous</Button>
-                        )}
-                        {currentQuestionIndex < quiz.questions.length - 1 ? (
-                            <Button onClick={handleNextQuestion}>Next</Button>
-                        ) : (
-                            <Button onClick={handleSubmitQuiz}>Submit Quiz</Button>
-                        )}
-                    </div>
-                </div>
-            )}
-        </div>
+                    >
+                        {quiz.questions[currentQuestionIndex].options.map((option, index) => (
+                            <FormControlLabel
+                                key={index}
+                                value={index}
+                                control={<Radio style={{ color: 'blue' }} />}
+                                label={option}
+                            />
+                        ))}
+                    </RadioGroup>
+                    <Grid container spacing={2} justifyContent="space-between" mt={2}>
+                        <Grid item>
+                            {currentQuestionIndex > 0 && (
+                                <Button variant="outlined" onClick={handlePreviousQuestion}>
+                                    Previous
+                                </Button>
+                            )}
+                        </Grid>
+                        <Grid item>
+                            {currentQuestionIndex < quiz.questions.length - 1 ? (
+                                <Button variant="contained" onClick={handleNextQuestion}>
+                                    Next
+                                </Button>
+                            ) : (
+                                <Button variant="contained" color="primary" onClick={handleSubmitQuiz}>
+                                    Submit Quiz
+                                </Button>
+                            )}
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </Card>
+        </Container>
     );
 };
 

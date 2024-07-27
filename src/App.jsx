@@ -10,7 +10,7 @@ import { EnrollmentProvider } from './ContextAPI/EnrollmentContext';
 import { AssignmentProvider } from './ContextAPI/AssignmentContext';
 import { LessonProvider } from './ContextAPI/LessonContext';
 import { QuizProvider } from './ContextAPI/QuizContext';
-import { AssignmentSubmissionProvider } from './ContextAPI/AssignmentSubmissionContext';
+// import { AssignmentSubmissionProvider } from './ContextAPI/AssignmentSubmissionContext';
 import { QueryProvider } from './ContextAPI/QueryContext';
 
 //Pages
@@ -51,6 +51,7 @@ import QuizList from './Quiz/QuizList';
 import CreateQuizForm from './Quiz/CreateQuizForm';
 import EditQuizForm from './Quiz/EditQuizForm';
 import QuizSubmissionForm from './Quiz/QuizSubmissionForm';
+import QuizSubmissionList from './Quiz/QuizSubmissionList';
 //Payments
 import PaymentForm from './Payment/PaymentForm';
 import PaymentPage from './Payment/PaymentPage';
@@ -68,7 +69,7 @@ function App() {
           <QuizProvider>
             <EnrollmentProvider>
               <AssignmentProvider>
-                  <AssignmentSubmissionProvider>
+                  {/* <AssignmentSubmissionProvider> */}
                     <QueryProvider>
                   <Router>
                     <Header />
@@ -98,12 +99,13 @@ function App() {
                             <Route path='/assignments/:courseId' element={<AssignmentList />} />
                             <Route path='/create-assignment/:courseId' element={<CreateAssignmentForm />} />
                             {/* <Route path='/assignments-edit/:assignmentId' element={<EditAssignmentForm />} /> */}
-                            <Route path='/submission/:assignmentId' element={<SubmissionForm />} />
+                            <Route path='/submit/:assignmentId' element={<SubmissionForm />} />
                             <Route path='/submissionList/:assignmentId' element={<SubmissionList />} />
                             <Route path='/quizzes/:courseId' element={<QuizList />} />
                             <Route path='/create-quiz/:courseId' element={<CreateQuizForm />} />
                             <Route path='/quiz-edit/:quizId' element={<EditQuizForm />} />
                             <Route path='/quiz-submission/:quizId' element={<QuizSubmissionForm />} />
+                            <Route path='//quiz-submission-list/:quizId' element={<QuizSubmissionList />} />
                             <Route path='/payment/:enrollmentId' element={<PaymentPage />} />
                             <Route path='/payment-form' element={<PaymentForm />} />
                             <Route path='/query' element={<Query />} />
@@ -115,7 +117,7 @@ function App() {
                     <Footer />
                   </Router>
                   </QueryProvider>
-                </AssignmentSubmissionProvider>
+                {/* </AssignmentSubmissionProvider> */}
               </AssignmentProvider>
             </EnrollmentProvider>
           </QuizProvider>

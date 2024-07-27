@@ -3,12 +3,12 @@ import { useFormik, FieldArray, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { QuizContext } from '../ContextAPI/QuizContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Form, Container, Row, Col } from 'react-bootstrap';
+import { Button, Form, Container, Col } from 'react-bootstrap';
 import { message } from 'antd';
 
 const EditQuizForm = () => {
   const { fetchQuizById, updateQuiz } = useContext(QuizContext);
-  const { quizId } = useParams();
+  const { quizId, courseId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [initialValues, setInitialValues] = useState({
@@ -23,25 +23,11 @@ const EditQuizForm = () => {
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        const quizData = await fetchQuizById(quizId);
-        console.log('Fetched quiz data:', quizData);
-
-        if (quizData && quizData.title && quizData.questions && Array.isArray(quizData.questions) && quizData.questions.length > 0) {
-          setInitialValues({
-            title: quizData.title,
-            questions: quizData.questions.map(question => ({
-              questionText: question.questionText,
-              options: question.options,
-              correctAnswer: question.correctAnswer
-            }))
-          });
-        } else {
-          console.error('Invalid quiz data structure:', quizData);
-          // Handle invalid data scenario (e.g., show error message)
-        }
+        const response = await fetchQuizById(quizId, setInitialValues);
+        console.log('Full response:', response);
       } catch (error) {
         console.error('Error fetching quiz data:', error);
-        // Handle fetch error (e.g., show error message)
+        message.error('Error fetching quiz data');
       }
     };
 
@@ -72,7 +58,7 @@ const EditQuizForm = () => {
         };
         await updateQuiz(quizId, updatedQuizData);
         message.success('Quiz updated successfully');
-        navigate(`/quizzes/${quizId}`);
+        navigate(`/quizzes/${courseId}`);
       } catch (error) {
         message.error('Failed to update quiz');
       } finally {
@@ -82,20 +68,20 @@ const EditQuizForm = () => {
   });
 
   return (
-    <div className="container">
+    <Container>
       <div className="card mb-3" style={{ width: '1200px' }}>
         <div className="row g-0">
-          <div className="col-md-6 d-md-block">
+          <Col md={6} className="d-md-block">
             <img
               src="https://clipart-library.com/2023/232-2328186_image-free-printable-and-other-fun-quizzes-clickable.png"
               className="img-fluid rounded-start login-image"
-              alt="..."
+              alt="Quiz"
             />
-          </div>
-          <div className="col-md-6 col-12">
+          </Col>
+          <Col md={6} xs={12}>
             <div className="card-body">
               <h1 className="text-center pacifico-regular" style={{ color: 'gray' }}>
-                <i className="bi bi-pen-fill">Edit Quiz</i>
+                <i className="bi bi-pen-fill"> Edit Quiz</i>
               </h1>
               <Form onSubmit={formik.handleSubmit}>
                 <Form.Group controlId="title">
@@ -233,11 +219,10 @@ const EditQuizForm = () => {
                 </Button>
               </Form>
             </div>
-          </div>
+          </Col>
         </div>
       </div>
-    </div>
-
+    </Container>
   );
 };
 
