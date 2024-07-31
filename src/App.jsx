@@ -27,18 +27,21 @@ import Users from './Auth/Users';
 import AdminDashboard from './DashBoards/AdminDashboard';
 import StudentDashboard from './DashBoards/StudentDashboard';
 import InstructorDashBoard from './DashBoards/InstructorDashBoard'
+//Enrollments
+import EnrollmentForm from './Enrollment/EnrollmentForm';
+import EnrollmentList from './Enrollment/EnrollmentList';
+import EnrollmentDetails from './Enrollment/EnrollmentDetails';
+import EnrollmentEditForm from './Enrollment/EnrollmentEditForm';
 //Course
 import CourseList from './Course/CourseList';
 import CourseDetails from './Course/CourseDetails';
 import CourseEditForm from './Course/CourseEditForm';
 import CreateCourseForm from './Course/CreateCourseForm';
 //Lessons
-import LessonForm from './Course/LessonForm';
-//Enrollments
-import EnrollmentForm from './Enrollment/EnrollmentForm';
-import EnrollmentList from './Enrollment/EnrollmentList';
-import EnrollmentDetails from './Enrollment/EnrollmentDetails';
-import EnrollmentEditForm from './Enrollment/EnrollmentEditForm';
+import LessonList from './Lessons/LessonList';
+import CreateLesson from './Lessons/CreateLesson';
+import LessonCompletionReport from './Lessons/LessonCompletionReport';
+import LessonDetailed from './Lessons/LessonDetailed';
 //Assignments
 import AssignmentList from './Assignment/AssignmentList';
 import CreateAssignmentForm from './Assignment/CreateAssignmentForm';
@@ -59,6 +62,7 @@ import PaymentPage from './Payment/PaymentPage';
 import Query from './Query/Query';
 //Progress Report
 import StudentProgressReport from './DashBoards/StudentProgressReport'
+import CourseProgress from './DashBoards/CourseProgress';
 
 function App() {
   const isAuthenticated = !!localStorage.getItem('token');
@@ -91,7 +95,6 @@ function App() {
                             <Route path='/courses/:courseId' element={<CourseDetails />} />
                             <Route path='/create-course' element={<CreateCourseForm />} />
                             <Route path='/course-edit/:courseId' element={<CourseEditForm />} />
-                            <Route path='/courses/:courseId/add-lesson' element={<LessonForm />} />
                             <Route path='/enroll/:courseId' element={<EnrollmentForm />} />
                             <Route path='/enroll' element={<EnrollmentList />} />
                             <Route path='/enroll-details' element={<EnrollmentDetails />} />
@@ -107,9 +110,14 @@ function App() {
                             <Route path='/quiz-submission/:quizId' element={<QuizSubmissionForm />} />
                             <Route path='//quiz-submission-list/:quizId' element={<QuizSubmissionList />} />
                             <Route path='/payment/:enrollmentId' element={<PaymentPage />} />
-                            <Route path='/payment-form' element={<PaymentForm />} />
+                            {/* <Route path='/payment-form' element={<PaymentForm />} /> */}
                             <Route path='/query' element={<Query />} />
-                            <Route path='/progress-report' element={<StudentProgressReport />} />
+                            {/* <Route path='/progress-report' element={<StudentProgressReport />} /> */}
+                            <Route path='/lessons/:courseId' element={<LessonList />}/>
+                            <Route path='/create-lesson/:courseId' element={<CreateLesson />}/>
+                            <Route path='/lesson-report/:courseId' element={<LessonCompletionReport />}/>
+                            <Route path='/lesson-detailed/:lessonId' element={<LessonDetailed />}/>
+                            <Route path='/progress-report/:courseId' element={<CourseProgress />}/>
                           </>
                         ) : (<Route path="*" element={<Navigate to="/login" />} />)}
                       </Routes>

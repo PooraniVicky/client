@@ -1057,8 +1057,12 @@ export const AssignmentProvider = ({ children }) => {
                     'Content-Type': 'application/json',
                 },
             });
+            console.log('Full response:', response);
+            console.log('Fetched assignment data:', response.data);
+
             setCurrentAssignment(response.data);
             setSubmissions(response.data.submissions || []);
+            return response;
         } catch (error) {
             console.error('Error fetching assignment by ID:', error);
             setCurrentAssignment(null);

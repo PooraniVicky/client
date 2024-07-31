@@ -1,8 +1,11 @@
 import React from 'react'
+import CourseList from '../Course/CourseList'
 
 function IntructorDashBoard() {
   return (
-    <div>IntructorDashBoard</div>
+    <div>
+      <CourseList />
+    </div>
   )
 }
 

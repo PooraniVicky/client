@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { QuizContext } from '../ContextAPI/QuizContext';
-import { Container, Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, Typography, CircularProgress, IconButton } from '@mui/material';
+import { Container, Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, Typography, CircularProgress, Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
 const QuizSubmissionList = () => {
@@ -80,12 +80,12 @@ const QuizSubmissionList = () => {
                                             {new Date(submission.createdAt).toLocaleDateString()}
                                         </TableCell>
                                         <TableCell align="center">
-                                            <IconButton onClick={() => handleEdit(submission._id)} color="primary">
+                                            <Button variant="contained" color="warning" className="me-3 mt-2" onClick={() => handleEdit(submission._id)} >
                                                Edit
-                                            </IconButton>
-                                            <IconButton onClick={() => handleDelete(submission._id)} color="secondary">
+                                            </Button>
+                                            <Button variant="contained" color="error" className="me-3 mt-2" onClick={() => handleDelete(submission._id)} >
                                                 Delete
-                                            </IconButton>
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))

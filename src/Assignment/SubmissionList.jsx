@@ -556,10 +556,16 @@ const SubmissionList = () => {
     const [marks, setMarks] = useState({});
     const [comments, setComments] = useState({});
 
+
     useEffect(() => {
-        if (assignmentId) {
-            fetchAssignmentByAssignmentId(assignmentId);
-        }
+        const fetchData = async () => {
+            try {
+                await fetchAssignmentByAssignmentId(assignmentId);
+            } catch (error) {
+                console.error('Failed to fetch assignment:', error);
+            }
+        };
+        fetchData();
     }, []);
 
     useEffect(() => {
@@ -678,6 +684,7 @@ const SubmissionList = () => {
                                     </TableCell>
                                     <TableCell align="center">
                                         <Button
+                                         className='me-2 mt-2'
                                             variant="outlined"
                                             color="success"
                                             onClick={() => handleGradeSubmit(submission._id)}
@@ -685,6 +692,7 @@ const SubmissionList = () => {
                                             Grade
                                         </Button>
                                         <Button
+                                        className='me-2 mt-2'
                                             variant="outlined"
                                             color="error"
                                             onClick={() => handleDelete(submission._id)}

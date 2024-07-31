@@ -202,6 +202,16 @@ const Header = () => {
                                 </div>
                             </>
                         )}
+                        {users && users.role === 'instructor' && (
+                            <>
+                                <Nav.Link as={Link} to="/courses">
+                                    Courses-Management
+                                </Nav.Link>
+                                <div className="mt-auto">
+                                    <button className="nav-link" onClick={() => window.history.back()}>Back</button>
+                                </div>
+                            </>
+                        )}
                         {users && users.role === 'student' && (
                             <>
                                 <Nav.Link as={Link} to="/courses">
@@ -213,11 +223,12 @@ const Header = () => {
                                         <React.Fragment key={enrollment._id}>
                                             <Nav.Link as={Link} to={`/assignments/${enrollment.course?._id}`} className="nav-link">Assignments</Nav.Link>
                                             <Nav.Link as={Link} to={`/quizzes/${enrollment.course?._id}`} className="nav-link">Quizzes</Nav.Link>
+                                            <Nav.Link as={Link} to={`/lessons/${enrollment.course?._id}`} className="nav-link">Lessons</Nav.Link>
+                                            <Nav.Link as={Link} to={`/progress-report/${enrollment.course?._id}`} className="nav-link">Progress Report</Nav.Link>
+
                                         </React.Fragment>
                                     ))}
-                                    <Nav.Link as={Link} to="/query" className="nav-link">Query</Nav.Link>
-                                    {/* <Nav.Link as={Link} to="/payment/:enrollmentId" className="nav-link">Payment</Nav.Link> */}
-                                    <Nav.Link as={Link} to="/progress-report" className="nav-link">Progress Report</Nav.Link>
+                                    
                                 </ul>
                                 <div className="mt-auto">
                                     <button className="nav-link" onClick={() => window.history.back()}>Back</button>

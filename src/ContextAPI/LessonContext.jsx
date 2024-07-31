@@ -1,72 +1,169 @@
 import React, { createContext, useState, useContext } from 'react';
-import axiosInstance from '../Services/axiosConfig.js';
+import axios from 'axios';
 
-// Create context
+// Create the context
 export const LessonContext = createContext();
 
-// Custom hook to use LessonContext
-export const useLessonContext = () => useContext(LessonContext);
-
-// Provider component
+// LessonProvider component
 export const LessonProvider = ({ children }) => {
     const [lessons, setLessons] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState(null);
 
-    // Fetch lessons from API
-    const fetchLessons = async (courseId) => {
+    // Fetch lessons for a specific course
+    const fetchLessonsByCourseId = async (courseId) => {
         setLoading(true);
         try {
-            const response = await axiosInstance.get(`/apiLessons/${courseId}`);
+            const response = await axios.get(`http://localhost:4000/apiLessons/lesson/course/${courseId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             setLessons(response.data);
+        } catch (error) {
+            setError(error.response?.data?.message || 'Failed to fetch lessons');
+        } finally {
             setLoading(false);
-        } catch (err) {
-            setError(err.message);
+        }
+    };
+
+    // Fetch a single lesson by ID
+    const fetchLessonById = async (lessonId) => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`http://localhost:4000/apiLessons/lesson/${lessonId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            setError(error.response?.data?.message || 'Failed to fetch lesson');
+        } finally {
             setLoading(false);
         }
     };
 
     // Create a new lesson
-    const createLesson = async (courseId, formData) => {
+    const createLesson = async (courseId, lessonData) => {
         setLoading(true);
         try {
-            const response = await axiosInstance.post(`/apiLessons/${courseId}`, formData, {
+            const response = await axios.post(`http://localhost:4000/apiLessons/lesson/${courseId}`, lessonData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
             });
-            setLessons([...lessons, response.data]);
-            setLoading(false);
-        } catch (err) {
-            setError(err.message);
+            setLessons((prevLessons) => [...prevLessons, response.data]);
+        } catch (error) {
+            setError(error.response?.data?.message || 'Failed to create lesson');
+        } finally {
             setLoading(false);
         }
     };
 
-    // Update an existing lesson by ID
-    const updateLesson = async (courseId, lessonId, updatedData) => {
+    // Update a lesson by ID
+    const updateLesson = async (lessonId, updatedData) => {
         setLoading(true);
         try {
-            const response = await axiosInstance.put(`/apiLessons/${courseId}/${lessonId}`, updatedData);
-            const updatedLessons = lessons.map((lesson) => (lesson._id === lessonId ? response.data : lesson));
-            setLessons(updatedLessons);
-            setLoading(false);
-        } catch (err) {
-            setError(err.message);
+            const response = await axios.put(`http://localhost:4000/apiLessons/lesson/${lessonId}`, updatedData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            setLessons((prevLessons) =>
+                prevLessons.map((lesson) => (lesson._id === lessonId ? response.data : lesson))
+            );
+        } catch (error) {
+            setError(error.response?.data?.message || 'Failed to update lesson');
+        } finally {
             setLoading(false);
         }
     };
 
     // Delete a lesson by ID
-    const deleteLesson = async (courseId, lessonId) => {
+    const deleteLesson = async (lessonId) => {
         setLoading(true);
         try {
-            await axiosInstance.delete(`/apiLessons/${courseId}/${lessonId}`);
-            const updatedLessons = lessons.filter((lesson) => lesson._id !== lessonId);
-            setLessons(updatedLessons);
+            await axios.delete(`http://localhost:4000/apiLessons/lesson/${lessonId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            setLessons((prevLessons) => prevLessons.filter((lesson) => lesson._id !== lessonId));
+        } catch (error) {
+            setError(error.response?.data?.message || 'Failed to delete lesson');
+        } finally {
             setLoading(false);
-        } catch (err) {
-            setError(err.message);
+        }
+    };
+
+    // // Mark a lesson as completed
+    // const markLessonAsCompleted = async (lessonId, userId, completionStatus) => {
+    //     setLoading(true);
+    //     try {
+    //         await axios.post(`http://localhost:4000/apiLessons/lesson/${lessonId}/complete`, { userId, completionStatus }, {
+    //             headers: {
+    //                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    //                 'Content-Type': 'application/json',
+    //             },
+    //         });
+    //         // Optionally refresh lessons or update local state
+    //     } catch (error) {
+    //         setError(error.response?.data?.message || 'Failed to update lesson completion status');
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+    // Mark a lesson as completed
+    const markLessonAsCompleted = async (lessonId, userId, completionStatus) => {
+        setLoading(true);
+        try {
+            await axios.post(`http://localhost:4000/apiLessons/lesson/${lessonId}/complete`,  {
+                userId,
+                completionStatus
+            }, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+                'Content-Type': 'application/json' },
+            });
+            return response.data;
+        } catch (error) {
+            setError(error.response?.data?.message || 'Failed to update lesson completion status');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Fetch progress for a course
+    const fetchCourseProgress = async (courseId) => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`http://localhost:4000/apiLessons/course/${courseId}/progress`,{
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            setError(error.response?.data?.message || 'Failed to fetch course progress');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Fetch completed students for a lesson
+    const fetchCompletedStudents = async (lessonId) => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`http://localhost:4000/apiLessons/lesson/${lessonId}/completed-students`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            setError(error.response?.data?.message || 'Failed to fetch completed students');
+        } finally {
             setLoading(false);
         }
     };
@@ -77,10 +174,14 @@ export const LessonProvider = ({ children }) => {
                 lessons,
                 loading,
                 error,
-                fetchLessons,
+                fetchLessonsByCourseId,
+                fetchLessonById,
                 createLesson,
                 updateLesson,
-                deleteLesson
+                deleteLesson,
+                markLessonAsCompleted,
+                fetchCourseProgress,
+                fetchCompletedStudents
             }}
         >
             {children}

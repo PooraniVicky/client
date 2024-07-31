@@ -2,18 +2,19 @@ import React, { useState, useContext } from "react";
 import { CourseContext } from "../ContextAPI/CourseContext";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { message } from "antd";
-import { Container, Card, CardActionArea, CardContent, CardMedia, Typography} from "@mui/material";
+import { Container, Card, CardActionArea, CardContent, CardMedia, Typography, Button } from "@mui/material";
 
 const PaymentForm = ({ amount, enrollmentId, onSuccess }) => {
     const stripe = useStripe();
-    const { fetchCourseById, currentCourse } = useContext(CourseContext);
     const elements = useElements();
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!stripe || !elements) {
+        if (!stripe || !elements || !enrollmentId) {
+            message.error('Enrollment ID is missing.');
+            setLoading(false);
             return;
         }
 
@@ -33,18 +34,24 @@ const PaymentForm = ({ amount, enrollmentId, onSuccess }) => {
                 return;
             }
 
-            // Send paymentMethod.id and other required details to your server
+            const amountToSend = amount ? parseInt(amount * 100, 10) : 0;
+
             const response = await fetch(`http://localhost:4000/apiPayments/payment/${enrollmentId}`, {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     paymentMethodId: paymentMethod.id,
-                    amount,
+                    amount: amountToSend,
                     enrollmentId,
                 }),
             });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok.');
+            }
 
             const paymentResult = await response.json();
 
@@ -63,32 +70,36 @@ const PaymentForm = ({ amount, enrollmentId, onSuccess }) => {
     };
 
     return (
-        <Container-fluid>
-    <Card sx={{ maxWidth: 345 }}>
-    <CardActionArea>
-    <CardMedia
-          component="img"
-          height="300"
-          image="https://cdni.iconscout.com/illustration/premium/thumb/card-payment-5364260-4510970.png"
-          alt="green iguana"
-        />
-    <CardContent>
-
-        <form onSubmit={handleSubmit}>
-        <Typography gutterBottom variant="h5" component="div">
-        <CardElement />
-
-          </Typography>
-            
-            <button type="submit" className='btn btn-success  mt-5 px-5' disabled={!stripe || loading}>
-                {loading ? 'Processing...' : 'Pay'}
-            </button>
-
-        </form>
-        </CardContent>
-      </CardActionArea>
-    </Card>
-        </Container-fluid>
+        <Container>
+            <Card sx={{ maxWidth: 345 }}>
+                <CardActionArea>
+                    <CardMedia
+                        component="img"
+                        height="300"
+                        image="https://cdni.iconscout.com/illustration/premium/thumb/card-payment-5364260-4510970.png"
+                        alt="Payment"
+                    />
+                    <CardContent>
+                        <form onSubmit={handleSubmit}>
+                            <Typography gutterBottom variant="h5" component="div">
+                                Payment Details
+                            </Typography>
+                            <CardElement />
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="success"
+                                fullWidth
+                                disabled={!stripe || loading}
+                                sx={{ mt: 2 }}
+                            >
+                                {loading ? 'Processing...' : 'Pay'}
+                            </Button>
+                        </form>
+                    </CardContent>
+                </CardActionArea>
+            </Card>
+        </Container>
     );
 };
 

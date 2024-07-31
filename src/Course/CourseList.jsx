@@ -6,7 +6,6 @@ import { AuthContext } from '../ContextAPI/AuthContext';
 import { message } from 'antd';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
-
 const CourseList = () => {
     const { fetchCourses, deleteCourse, courses, loading } = useContext(CourseContext);
     const { users } = useContext(AuthContext);
@@ -71,27 +70,29 @@ const CourseList = () => {
         course.category.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleAssignments = (courseId) =>{
-        navigate(`/assignments/${courseId}`);
+    const handleLessons = (courseId) => {
+        navigate(`/lessons/${courseId}`); // Ensure this navigates to the correct LessonsPage
     };
 
-    const handleQuizzes = (courseId) =>{
-        navigate(`/quizzes/${courseId}`);
+    const handleAssignments = (courseId) => {
+        navigate(`/assignments/${courseId}`); // Ensure this navigates to the correct AssignmentsPage
+    };
+
+    const handleQuizzes = (courseId) => {
+        navigate(`/quizzes/${courseId}`); // Ensure this navigates to the correct QuizzesPage
     };
 
     return (
         <div className="container-fluid">
             <h2 className="text-center pacifico-regular">Our Courses</h2>
             <div className="d-flex justify-content-end mb-3 me-4">
-                
                 <input
                     type="text"
                     placeholder="Search"
                     className="form-control me-2"
                     value={searchTerm}
                     onChange={handleSearch}
-                    style={{ width: '250px', height: "38px" }}
-                    
+                    style={{ width: '200px', height: "38px" }}
                 />
                 <DropdownButton
                     id="dropdown-sort-button"
@@ -104,7 +105,6 @@ const CourseList = () => {
                     <Dropdown.Item eventKey="Low Price to High Price">Low Price to High Price</Dropdown.Item>
                     <Dropdown.Item eventKey="High Price to Low Price">High Price to Low Price</Dropdown.Item>
                 </DropdownButton>
-               
             </div>
             {users && users.role === 'admin' && (
                 <div className="d-flex justify-content-end">
@@ -120,8 +120,8 @@ const CourseList = () => {
                     <p>No courses available.</p>
                 ) : (
                     filteredCourses.map((course) => (
-                        <div className="col mb-4" key={course._id}>
-                            <div className="card h-100">
+                        <div className="col mb-4 d-flex justify-content-center" key={course._id}>
+                            <div className="card h-100" style={{ width: '350px' }}>
                                 {course.images && (
                                     <img src={course.images[0]} alt={course.title} className="card-img-top img-fluid" style={{ border: '3px solid gold', borderRadius: '15%' }} />
                                 )}
@@ -130,10 +130,10 @@ const CourseList = () => {
                                     <p><strong>Category:</strong> {course.category}</p>
                                     <p><strong>Price:</strong> ${course.price}</p>
                                     <div className="d-flex justify-content-between align-items-center mb-3">
-                                    {users && users.role === 'admin' && (
-                                            <>
-                                                <button className="btn btn-outline-info asap me-2" onClick={() => handleAssignments(course._id)}>Assignments</button>
-                                                <button className="btn btn-outline-info asap me-2" onClick={() => handleQuizzes(course._id)}>Quizzes</button>
+                                    {users && (users.role === 'admin' || users.role === 'instructor') && (                                            <>
+                                                <button className="btn btn-outline-info asap me-1" onClick={() => handleLessons(course._id)}>Lessons</button>
+                                                <button className="btn btn-outline-info asap me-1" onClick={() => handleAssignments(course._id)}>Assignments</button>
+                                                <button className="btn btn-outline-info asap me-1" onClick={() => handleQuizzes(course._id)}>Quizzes</button>
                                             </>
                                         )}
                                     </div>
