@@ -7,6 +7,7 @@ export const LessonContext = createContext();
 // LessonProvider component
 export const LessonProvider = ({ children }) => {
     const [lessons, setLessons] = useState([]);
+    const [currentLesson, setCurrentLesson] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -36,6 +37,8 @@ export const LessonProvider = ({ children }) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
             });
+            // console.log('Full response:', response);
+            // console.log('Fetched lesson data:', response.data);
             return response.data;
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to fetch lesson');
@@ -98,33 +101,19 @@ export const LessonProvider = ({ children }) => {
         }
     };
 
-    // // Mark a lesson as completed
-    // const markLessonAsCompleted = async (lessonId, userId, completionStatus) => {
-    //     setLoading(true);
-    //     try {
-    //         await axios.post(`http://localhost:4000/apiLessons/lesson/${lessonId}/complete`, { userId, completionStatus }, {
-    //             headers: {
-    //                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    //                 'Content-Type': 'application/json',
-    //             },
-    //         });
-    //         // Optionally refresh lessons or update local state
-    //     } catch (error) {
-    //         setError(error.response?.data?.message || 'Failed to update lesson completion status');
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
+
     // Mark a lesson as completed
     const markLessonAsCompleted = async (lessonId, userId, completionStatus) => {
         setLoading(true);
         try {
-            await axios.post(`http://localhost:4000/apiLessons/lesson/${lessonId}/complete`,  {
+            await axios.post(`http://localhost:4000/apiLessons/lesson/${lessonId}/complete`, {
                 userId,
                 completionStatus
             }, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`, 
-                'Content-Type': 'application/json' },
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
             });
             return response.data;
         } catch (error) {
@@ -138,7 +127,7 @@ export const LessonProvider = ({ children }) => {
     const fetchCourseProgress = async (courseId) => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4000/apiLessons/course/${courseId}/progress`,{
+            const response = await axios.get(`http://localhost:4000/apiLessons/course/${courseId}/progress`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -172,6 +161,7 @@ export const LessonProvider = ({ children }) => {
         <LessonContext.Provider
             value={{
                 lessons,
+                currentLesson,
                 loading,
                 error,
                 fetchLessonsByCourseId,

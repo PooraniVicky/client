@@ -52,44 +52,44 @@ const EnrollmentForm = () => {
         navigate('/courses');
     };
 
-    const handlePayNowEnrollment = async (values, setSubmitting) => {
-        if (!courseId) {
-            message.error("Course ID is undefined.");
-            setSubmitting(false);
-            return;
-        }
+    // const handlePayNowEnrollment = async (values, setSubmitting) => {
+    //     if (!courseId) {
+    //         message.error("Course ID is undefined.");
+    //         setSubmitting(false);
+    //         return;
+    //     }
 
-        const userId = users?.userId;
+    //     const userId = users?.userId;
 
-        if (!userId) {
-            message.error("User ID is undefined. Please log in again.");
-            setSubmitting(false);
-            return;
-        }
+    //     if (!userId) {
+    //         message.error("User ID is undefined. Please log in again.");
+    //         setSubmitting(false);
+    //         return;
+    //     }
 
-        try {
-            const enrollmentData = {
-                user: userId,
-                course: courseId,
-                qualification: values.qualification,
-                passOutYear: values.passOutYear,
-                paymentStatus: 'pending', // Set initial payment status as 'pending'
-            };
+    //     try {
+    //         const enrollmentData = {
+    //             user: userId,
+    //             course: courseId,
+    //             qualification: values.qualification,
+    //             passOutYear: values.passOutYear,
+    //             paymentStatus: 'pending', // Set initial payment status as 'pending'
+    //         };
 
-            await createEnrollment(courseId, enrollmentData);
-            updateUserDetails({ ...users, enrollStatus: 'enrolled' });
-            fetchEnrollments();
-            navigate(`/payment/${enrollmentData._id}`);
-        } catch (error) {
-            console.error('Enrollment Error:', error);
-            if (error.response && error.response.data) {
-                console.error('Server Response Data:', error.response.data);
-            }
-            message.error('Enrollment Failed.');
-        } finally {
-            setSubmitting(false);
-        }
-    };
+    //         await createEnrollment(courseId, enrollmentData);
+    //         updateUserDetails({ ...users, enrollStatus: 'enrolled' });
+    //         fetchEnrollments();
+    //         navigate(`/payment/${enrollmentData._id}`);
+    //     } catch (error) {
+    //         console.error('Enrollment Error:', error);
+    //         if (error.response && error.response.data) {
+    //             console.error('Server Response Data:', error.response.data);
+    //         }
+    //         message.error('Enrollment Failed.');
+    //     } finally {
+    //         setSubmitting(false);
+    //     }
+    // };
 
     const handlePayLaterEnrollment = async (values, setSubmitting) => {
         if (!courseId) {
@@ -130,6 +130,45 @@ const EnrollmentForm = () => {
             setSubmitting(false);
         }
     };
+    const handlePayNowEnrollment = async (values, setSubmitting) => {
+        if (!courseId) {
+            message.error("Course ID is undefined.");
+            setSubmitting(false);
+            return;
+        }
+
+        const userId = users?.userId;
+
+        if (!userId) {
+            message.error("User ID is undefined. Please log in again.");
+            setSubmitting(false);
+            return;
+        }
+
+        try {
+            const enrollmentData = {
+                user: userId,
+                course: courseId,
+                qualification: values.qualification,
+                passOutYear: values.passOutYear,
+                paymentStatus: 'pending', // Set initial payment status as 'pending'
+            };
+
+            await createEnrollment(courseId, enrollmentData);
+            updateUserDetails({ ...users, enrollStatus: 'enrolled' });
+            fetchEnrollments();
+
+            navigate(`/payment/${enrollmentData._id}`, { state: { price: currentCourse.price } });
+        } catch (error) {
+            console.error('Enrollment Error:', error);
+            if (error.response && error.response.data) {
+                console.error('Server Response Data:', error.response.data);
+            }
+            message.error('Enrollment Failed.');
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
     if (!currentCourse || !users) return <div>Loading course details...</div>;
 
@@ -138,7 +177,7 @@ const EnrollmentForm = () => {
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={() => {}} // Dummy submit handler to avoid errors
+                onSubmit={() => { }} // Dummy submit handler to avoid errors
             >
                 {({ isSubmitting, setFieldValue, values, setSubmitting }) => (
                     <Form>

@@ -1,55 +1,36 @@
-import React, { useEffect, useState } from 'react';
+// ForgotPassword.jsx
+import React, { useState, useContext } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import axios from '../Services/axiosConfig.js';
+import { AuthContext } from '../ContextAPI/AuthContext';
+import { message as antMessage } from 'antd';
 
 const ForgotPassword = () => {
-    const [error, setError] = useState('');
-    const [message, setMessage] = useState('');
-    const [values, setValues] = useState({ email: '' });
-    useEffect(() => {
-      const messageTimer = setTimeout(() => {
-        setMessage('');
-      }, 3000);
-  
-      const errorTimer = setTimeout(() => {
-        setError('');
-      }, 3000);
-  
-      return () => {
-        clearTimeout(messageTimer);
-        clearTimeout(errorTimer);
-      };
-    }, [message, error]);
-    const validationSchema = Yup.object({
-      email: Yup.string().email('Invalid email').required('Required'),
-    });
-  
-    const onSubmit = async (values) => {
-      try {
-        await axios.post('apiUsers/forgot-password', values);
-        setMessage('Password reset link sent');
-        setError('');
-      } catch (error) {
-        setError('Failed to send reset link');
-        setMessage('');
-      }
-    };
-  
-    const handleInputChange = (e) => {
-      const { name, value } = e.target;
-      setValues({ ...values, [name]: value });
-    };
-  
-    return (
-      <div className="container">
+  const { forgotPassword } = useContext(AuthContext);
+
+  const validationSchema = Yup.object({
+    email: Yup.string().email('Invalid email').required('Required'),
+  });
+
+  const onSubmit = async (values, { setSubmitting }) => {
+    const response = await forgotPassword(values.email);
+    if (response.success) {
+      antMessage.success(response.message); // Ant Design message
+    } else {
+      antMessage.error(response.message); // Ant Design message
+    }
+    setSubmitting(false);
+  };
+
+  return (
+    <div className="container">
       <div className="card mb-3">
         <div className="row g-0">
           <div className="col-md-5 d-none d-md-block">
             <img
               src="https://static.vecteezy.com/system/resources/previews/016/462/187/original/forgot-the-password-illustration-concept-on-white-background-vector.jpg"
               className="img-fluid rounded-start login-image"
-              alt="..."
+              alt="Forgot Password"
             />
           </div>
           <div className="col-md-7 col-12">
@@ -57,28 +38,41 @@ const ForgotPassword = () => {
               <h1 className="text-center pacifico-regular" style={{ color: 'gray' }}>
                 Forgot Password
               </h1>
-              
-        <Formik initialValues={values} validationSchema={validationSchema} onSubmit={onSubmit}>
-          {() => (
-            <Form>
-              <div className="form-group">
-                <label className='playwrite-sk'>Email</label>
-                <input name="email" type="email" className="form-control" placeholder="Email" onChange={handleInputChange} />
-                <ErrorMessage name="email" component="div" className="text-danger" />
-              </div>
-              <button type="submit" className="btn btn-primary mt-3 pacifico-regular" style={{fontSize: '1.5rem'}}>Send Reset Link</button>
-              {error && <div className="alert alert-danger">{error}</div>}
-              {message && <div className="alert alert-success">{message}</div>}
-            </Form>
-          )}
-        </Formik>
+              <Formik
+                initialValues={{ email: '' }}
+                validationSchema={validationSchema}
+                onSubmit={onSubmit}
+              >
+                {({ isSubmitting }) => (
+                  <Form>
+                    <div className="form-group">
+                      <label htmlFor="email" className="playwrite-sk">Email</label>
+                      <Field
+                        name="email"
+                        type="email"
+                        className="form-control"
+                        placeholder="Email"
+                      />
+                      <ErrorMessage name="email" component="div" className="text-danger" />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="btn btn-primary mt-3 pacifico-regular"
+                      style={{ fontSize: '1.5rem' }}
+                    >
+                      Send Reset Link
+                    </button>
+
+                  </Form>
+                )}
+              </Formik>
             </div>
           </div>
         </div>
       </div>
     </div>
-     
-    );
-  };
+  );
+};
 
 export default ForgotPassword;

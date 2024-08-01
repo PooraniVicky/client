@@ -6,7 +6,7 @@ export const QuizContext = createContext();
 export const QuizProvider = ({ children }) => {
     const [quizzes, setQuizzes] = useState([]);
     const [totalQuizCount, setTotalQuizCount] = useState(0);
-    const [totalQuizGrade, setTotalQuizGrade] = useState(0); // State for total quiz grade
+    const [totalQuizGrade, setTotalQuizGrade] = useState(0);
     const [loading, setLoading] = useState(false);
     const [storeQuizScore, setStoreQuizScore] = useState({});
     const [quizSubmissions, setQuizSubmissions] = useState({});
@@ -18,14 +18,14 @@ export const QuizProvider = ({ children }) => {
             if (!courseId) {
                 throw new Error('Course ID is not provided');
             }
-            
+
             const response = await axios.get(`http://localhost:4000/apiQuizzes/course/${courseId}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
             });
-    
+
             setQuizzes(response.data.quizzes);
             setTotalQuizCount(response.data.count);
         } catch (error) {
@@ -38,7 +38,7 @@ export const QuizProvider = ({ children }) => {
         if (!quizId) {
             throw new Error('Quiz ID is required');
         }
-    
+
         setLoading(true);
         try {
             const response = await axios.get(`http://localhost:4000/apiQuizzes/${quizId}`, {
@@ -47,13 +47,13 @@ export const QuizProvider = ({ children }) => {
                     'Content-Type': 'application/json',
                 },
             });
-    
+
             // Log the full response object and the specific quiz data for debugging
-            console.log('Full response:', response);
-            console.log('Fetched quiz data:', response.data.quiz);
-    
+            // console.log('Full response:', response);
+            // console.log('Fetched quiz data:', response.data.quiz);
+
             // Set quiz data and submissions
-            
+
             setCurrentQuiz(response.data.quiz || {}); // Ensure it’s an object
             setQuizSubmissions(response.data.quiz.submissions || []); // Ensure it’s an array
             return response; // Ensure this returns the full response object
@@ -62,7 +62,7 @@ export const QuizProvider = ({ children }) => {
             console.error('Error fetching quiz by ID:', error.response ? error.response.data : error.message);
             setCurrentQuiz(null); // Handle quiz state
             setQuizSubmissions([]); // Reset submissions
-    
+
             if (error.response && error.response.status === 404) {
                 console.error('Quiz not found:', quizId);
             }
@@ -70,41 +70,8 @@ export const QuizProvider = ({ children }) => {
             setLoading(false);
         }
     };
-    // const fetchQuizById = async (quizId) => {
-    //     if (!quizId) {
-    //         throw new Error('Quiz ID is required');
-    //     }
-    
-    //     setLoading(true);
-    //     try {
-    //         const response = await axios.get(`http://localhost:4000/apiQuizzes/${quizId}`, {
-    //             headers: {
-    //                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    //                 'Content-Type': 'application/json',
-    //             },
-    //         });
-    
-    //         // Log the full response object and the specific quiz data for debugging
-    //         console.log('Full response:', response);
-    //         console.log('Fetched quiz data:', response.data.quiz);
-    
-    //         // Set quiz data and submissions
-    //         setCurrentQuiz(response.data.quiz || {}); // Ensure it’s an object
-    //         setQuizSubmissions(response.data.quiz.submissions || []); // Ensure it’s an array
-    
-    //     } catch (error) {
-    //         console.error('Error fetching quiz by ID:', error.response ? error.response.data : error.message);
-    //         setCurrentQuiz(null); // Handle quiz state
-    //         setQuizSubmissions([]); // Reset submissions
-    
-    //         if (error.response && error.response.status === 404) {
-    //             console.error('Quiz not found:', quizId);
-    //         }
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-    
+
+
 
     const createQuiz = async (courseId, quizData) => {
         try {
@@ -201,7 +168,7 @@ export const QuizProvider = ({ children }) => {
         try {
             await axios.delete(`http://localhost:4000/apiQuizzes/submissions/${submissionId}`, {
                 headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             });
             setQuizSubmissions(quizSubmissions.filter((submission) => submission._id !== submissionId));
@@ -215,23 +182,23 @@ export const QuizProvider = ({ children }) => {
 
 
     return (
-        <QuizContext.Provider value={{ 
-            quizzes, 
-            totalQuizCount, 
-            totalQuizGrade, // Expose totalQuizGrade
-            loading, 
-            fetchQuizzesByCourseId, 
-            fetchQuizById, 
-            fetchTotalQuizGrade, // Expose fetchTotalQuizGrade
+        <QuizContext.Provider value={{
+            quizzes,
+            totalQuizCount,
+            totalQuizGrade,
+            loading,
+            fetchQuizzesByCourseId,
+            fetchQuizById,
+            fetchTotalQuizGrade,
             currentQuiz,
-            createQuiz, 
+            createQuiz,
             updateQuiz,
-            deleteQuiz, 
+            deleteQuiz,
             updateQuizGrade,
             quizSubmissions,
             deleteSubmission,
             storeQuizScore,
-            }}>
+        }}>
             {children}
         </QuizContext.Provider>
     );

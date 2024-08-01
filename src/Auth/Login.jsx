@@ -53,7 +53,7 @@ const Login = () => {
                 }
             }
         }
-    }, [users, navigate]);
+    }, []);
 
     return (
         <div className="container">
@@ -99,7 +99,15 @@ const Login = () => {
                                                 required
                                             />
                                             <ErrorMessage name="password" component="div" className="text-danger" />
+                                            <button
+                                                type="button"
+                                                className="btn btn-link"
+                                                onClick={() => navigate('/forgot-password')}
+                                            >
+                                                Forgot Password?
+                                            </button>
                                         </div>
+
                                         <div className="d-flex justify-content-center gap-4">
                                             <button
                                                 type="submit"
@@ -110,6 +118,7 @@ const Login = () => {
                                                 {loading ? 'Logging in...' : 'Login'}
                                             </button>
                                         </div>
+
                                     </Form>
                                 )}
                             </Formik>

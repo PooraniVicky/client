@@ -65,21 +65,22 @@ const CourseList = () => {
         setSortedCourses(sorted);
     };
 
-    const filteredCourses = sortedCourses.filter((course) =>
-        course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        course.category.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredCourses = sortedCourses.filter(
+        (course) =>
+            course?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            course?.category?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleLessons = (courseId) => {
-        navigate(`/lessons/${courseId}`); // Ensure this navigates to the correct LessonsPage
+        navigate(`/lessons/${courseId}`);
     };
 
     const handleAssignments = (courseId) => {
-        navigate(`/assignments/${courseId}`); // Ensure this navigates to the correct AssignmentsPage
+        navigate(`/assignments/${courseId}`);
     };
 
     const handleQuizzes = (courseId) => {
-        navigate(`/quizzes/${courseId}`); // Ensure this navigates to the correct QuizzesPage
+        navigate(`/quizzes/${courseId}`);
     };
 
     return (
@@ -130,11 +131,11 @@ const CourseList = () => {
                                     <p><strong>Category:</strong> {course.category}</p>
                                     <p><strong>Price:</strong> ${course.price}</p>
                                     <div className="d-flex justify-content-between align-items-center mb-3">
-                                    {users && (users.role === 'admin' || users.role === 'instructor') && (                                            <>
-                                                <button className="btn btn-outline-info asap me-1" onClick={() => handleLessons(course._id)}>Lessons</button>
-                                                <button className="btn btn-outline-info asap me-1" onClick={() => handleAssignments(course._id)}>Assignments</button>
-                                                <button className="btn btn-outline-info asap me-1" onClick={() => handleQuizzes(course._id)}>Quizzes</button>
-                                            </>
+                                        {users && (users.role === 'admin' || users.role === 'instructor') && (<>
+                                            <button className="btn btn-outline-info asap me-1" onClick={() => handleLessons(course._id)}>Lessons</button>
+                                            <button className="btn btn-outline-info asap me-1" onClick={() => handleAssignments(course._id)}>Assignments</button>
+                                            <button className="btn btn-outline-info asap me-1" onClick={() => handleQuizzes(course._id)}>Quizzes</button>
+                                        </>
                                         )}
                                     </div>
                                     <div className="d-flex justify-content-between align-items-center">

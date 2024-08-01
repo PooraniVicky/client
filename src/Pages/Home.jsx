@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { Container, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Grid } from '@mui/material';
+import { Card } from 'antd';
 const Home = () => {
   const getResponsiveStyles = () => {
     const width = window.innerWidth;
@@ -30,37 +31,75 @@ const Home = () => {
   const styles = getResponsiveStyles();
 
   return (
-    <div className="container" >
-      <div className="card text border-0 rounded-0 w-100 p-0" style={{background: 'none'}}>
-        {/* <img 
-          src="https://png.pngtree.com/thumb_back/fw800/back_our/20190622/ourmid/pngtree-tech-artificial-intelligence-banner-background-image_210798.jpg" 
-          className="card-img" 
-          alt="Background"
-          style={{ height: '100%', objectFit: 'cover' }}
-        /> */}
-       
-          <h1 
-            className="card-title pacifico-regular" 
-            // style={{ color: '#ffffff', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', ...styles.title }}
+    <Container style={{ padding: '2rem' }}>
+      <div className="text-center mb-5">
+        <Typography variant="h1" style={{ ...styles.title, marginBottom: '20px' }}>
+          <img src="http://clipart-library.com/image_gallery2/Education.png" style={{ width: '40%', maxWidth: '100px' }} className="card-img-top" alt="..." />
+          Welcome to KnowledgeBridge
+        </Typography>
+        <Typography variant="h6" style={{ ...styles.text, marginBottom: '30px' }}>
+          Enhance your learning experience with our advanced e-learning platform.
+        </Typography>
+        <Link to="/register">
+          <Button
+            variant="contained"
+            color="warning"
+            style={{ borderRadius: '20px' }}
           >
-            Welcome to KnowledgeBridge
-          </h1>
-          <p 
-            className="card-text asap" 
-            // style={{ color: '#ffffff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)', ...styles.text }}
-          >
-            Enhance your learning experience with our advanced e-learning platform.
-          </p>
-          <Link to="/register">
-            <button 
-              className="btn btn-dark mb-3" 
-              style={{ borderRadius: '20px', ...styles.button }}
-            >
-              Get Started
-            </button>
-          </Link>
-        </div>
+            Get Started
+          </Button>
+        </Link>
       </div>
+
+      <div style={{ marginBottom: '40px' }}>
+        <Typography variant="h4" style={{ marginBottom: '20px', textAlign: 'center' }}>
+          Why Choose KnowledgeBridge?
+        </Typography>
+
+        <Typography variant="body1" paragraph>
+          At KnowledgeBridge, our mission is to provide a comprehensive and engaging learning experience. Whether you're looking to improve your coding skills or advance in your career, we offer a variety of features to help you succeed:
+        </Typography>
+
+        <Grid container spacing={4}>
+          <Grid item xs={12} sm={4}>
+            <Card style={{ minHeight: '210px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold' }}>
+                <img src="https://static.vecteezy.com/system/resources/previews/000/663/196/original/vector-learning-people-set-isolated-on-white-background.jpg" style={{ width: '40%', maxWidth: '100px' }} className="card-img-top" alt="..." />
+                Personalized Learning
+              </Typography>
+              <Typography variant="body2">
+                Tailor your learning journey with customized course materials and assignments based on your individual needs and progress.
+              </Typography>
+            </Card>
+
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Card style={{ minHeight: '210px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold' }}>
+                <img src="https://wallpaperaccess.com/full/2384076.png" style={{ width: '40%', maxWidth: '100px' }} className="card-img-top" alt="..." />
+                Interactive Quizzes
+              </Typography>
+              <Typography variant="body2">
+                Challenge yourself with interactive quizzes that test your knowledge and track your performance over time.
+              </Typography>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <Card style={{ minHeight: '210px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold' }}>
+                <img src="https://media.istockphoto.com/vectors/progress-bar-chart-vector-id468140701?k=6&m=468140701&s=612x612&w=0&h=l5MuUQT2dmPgaQ9k3G0WNEKoKYya2vTVyd7Xm6cVDw4=" style={{ width: '40%', maxWidth: '100px' }} className="card-img-top" alt="..." />
+                Progress Tracking
+              </Typography>
+              <Typography variant="body2">
+                Monitor your progress with detailed reports and insights, helping you stay motivated and on track to achieve your learning goals.
+              </Typography>
+            </Card>
+
+          </Grid>
+        </Grid>
+      </div>
+
+    </Container>
   );
 }
 

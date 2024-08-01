@@ -55,12 +55,12 @@ const CourseEditForm = ({ show, handleClose, courseId }) => {
         price: Yup.number().required('Required').positive('Must be a positive number'),
         duration: Yup.string().required('Required'),
         category: Yup.string().required('Required'),
-        
+
     });
 
     const handleFormSubmit = async (values, { setSubmitting }) => {
         try {
-           
+
             await updateCourse(courseId, values, mediaFiles);
             message.success("Course Updated Successfully..!")
             setMediaFiles([]);
@@ -80,7 +80,7 @@ const CourseEditForm = ({ show, handleClose, courseId }) => {
     };
 
     return (
-        <div className={`modal ${show ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: show ? 'block' : 'none', maxHeight: '75vh', marginTop: '40px'}}>
+        <div className={`modal ${show ? 'show' : ''}`} tabIndex="-1" role="dialog" style={{ display: show ? 'block' : 'none', maxHeight: '75vh', marginTop: '40px' }}>
             <div className="modal-dialog modal-dialog-centered" role="document">
                 <div className="modal-content">
                     <div className="modal-header">

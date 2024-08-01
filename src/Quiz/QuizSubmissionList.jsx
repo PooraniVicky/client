@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { QuizContext } from '../ContextAPI/QuizContext';
-import { Container, Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, Typography, CircularProgress, Button } from '@mui/material';
+import {  Table, TableContainer, TableHead, TableBody, TableRow, TableCell, Paper, Typography, CircularProgress, Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import { Container, Row, Col } from 'react-bootstrap';
 
 const QuizSubmissionList = () => {
     const { fetchQuizById, quizSubmissions, deleteSubmission } = useContext(QuizContext);
@@ -22,12 +23,7 @@ const QuizSubmissionList = () => {
             }
         };
         fetchSubmissions();
-    }, [quizId]);
-
-    const handleEdit = (submissionId) => {
-        // Navigate to the edit page or open an edit modal
-        console.log('Edit submission with ID:', submissionId);
-    };
+    }, []);
 
     const handleDelete = async (submissionId) => {
         try {
@@ -43,16 +39,21 @@ const QuizSubmissionList = () => {
     const isQuizSubmissionsValid = Array.isArray(quizSubmissions) && quizSubmissions.length > 0;
 
     return (
-        <Container style={{ padding: '20px' }}>
-            <Typography variant="h4" gutterBottom className='text-center pacifico-regular mt-3 mb-3' style={{ color: 'darkcyan' }}>
-                Quiz Submissions
-            </Typography>
+        <Container style={{ padding: '20px', minHeight: '90vh' }}>
+           
             {loading ? (
                 <CircularProgress />
             ) : error ? (
                 <Typography color="error">{error}</Typography>
             ) : (
                 <TableContainer component={Paper}>
+                     <Row className="mt-4">
+                     <Col md={9} className="text-center">
+                     <Typography variant="h4" gutterBottom className='text-center pacifico-regular mt-3 mb-3' style={{ color: 'darkcyan' }}>
+                Quiz Submissions
+            </Typography>
+            </Col>
+            </Row>
                     <Table aria-label="submission table">
                         <TableHead>
                             <TableRow>
@@ -80,10 +81,7 @@ const QuizSubmissionList = () => {
                                             {new Date(submission.createdAt).toLocaleDateString()}
                                         </TableCell>
                                         <TableCell align="center">
-                                            <Button variant="contained" color="warning" className="me-3 mt-2" onClick={() => handleEdit(submission._id)} >
-                                               Edit
-                                            </Button>
-                                            <Button variant="contained" color="error" className="me-3 mt-2" onClick={() => handleDelete(submission._id)} >
+                                             <Button variant="contained" color="error" className="mt-2" onClick={() => handleDelete(submission._id)} >
                                                 Delete
                                             </Button>
                                         </TableCell>

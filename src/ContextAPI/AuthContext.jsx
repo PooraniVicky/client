@@ -9,16 +9,12 @@ export const AuthProvider = ({ children }) => {
     const [instructors, setInstructors] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
-
-    // useEffect(() => {
-    //     // Fetch all users on component mount
-    //     getAllUsers();
-    // }, []);
+    const [message, setMessage] = useState();
 
     const getAllUsers = async () => {
         setLoading(true);
         setError(null);
-  
+
         try {
             const token = localStorage.getItem('token');
             const response = await axios.get('http://localhost:4000/apiUsers/users', {
@@ -26,21 +22,21 @@ export const AuthProvider = ({ children }) => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-    
-          
-        if (response.data && Array.isArray(response.data)) {
-            setUsersDetails(response.data);
-            //console.log("Users Details:", response.data); // Check data format
-        } else {
-            console.warn("Unexpected response format:", response.data); // Debug output
-        } 
+
+
+            if (response.data && Array.isArray(response.data)) {
+                setUsersDetails(response.data);
+                //console.log("Users Details:", response.data); // Check data format
+            } else {
+                console.warn("Unexpected response format:", response.data); // Debug output
+            }
         } catch (err) {
             console.error('User Fetching user:', err.response ? err.response.data : err.message);
             setError(err.message || 'Failed to fetch users.');
             setLoading(false);
         }
     };
-    
+
     const fetchUserDetails = async () => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -89,7 +85,24 @@ export const AuthProvider = ({ children }) => {
         setUsers(null);
         localStorage.removeItem('token');
     };
+    const forgotPassword = async (email) => {
+        try {
+            const response = await axios.post('http://localhost:4000/apiUsers/forgot-password', { email });
+            return { success: true, message: response.data.message };
+        } catch (error) {
+            return { success: false, message: error.response ? error.response.data.message : 'Error occurred' };
+        }
+    };
 
+    const resetPassword = async (token, password) => {
+        try {
+            const response = await axios.post(`http://localhost:4000/apiUsers/reset-password/${token}`, { password });
+            return { success: true, message: response.data.message };
+        } catch (error) {
+            console.error(error);
+            return { success: false, message: error.response?.data?.message || 'Error resetting password' };
+        }
+    };
     useEffect(() => {
         if (localStorage.getItem("token")) {
             fetchUserDetails();
@@ -118,6 +131,8 @@ export const AuthProvider = ({ children }) => {
                 users,
                 login,
                 logout,
+                forgotPassword,
+                resetPassword,
                 getAllUsers,
                 usersDetails,
                 fetchUserDetails,

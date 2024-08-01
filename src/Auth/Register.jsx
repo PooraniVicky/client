@@ -84,7 +84,7 @@ const Register = () => {
                     <div className='mt-3'>
                       <p className='text-center playwrite-sk'>Already have an account? <Link to={'/login'}>Login</Link></p>
                     </div>
-                    
+
                   </Form>
                 )}
               </Formik>

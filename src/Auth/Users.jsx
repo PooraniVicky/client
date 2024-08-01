@@ -59,7 +59,7 @@ const Users = () => {
     };
 
     return (
-        <Container style={{padding: '1rem'}}>
+        <Container style={{ padding: '1rem' }}>
             <h1 className='pacifico-regular' style={{ textAlign: 'center', paddingBottom: '30px' }}>Users Management</h1>
 
             {editing && selectedUser && (

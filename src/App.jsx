@@ -10,8 +10,6 @@ import { EnrollmentProvider } from './ContextAPI/EnrollmentContext';
 import { AssignmentProvider } from './ContextAPI/AssignmentContext';
 import { LessonProvider } from './ContextAPI/LessonContext';
 import { QuizProvider } from './ContextAPI/QuizContext';
-// import { AssignmentSubmissionProvider } from './ContextAPI/AssignmentSubmissionContext';
-import { QueryProvider } from './ContextAPI/QueryContext';
 
 //Pages
 import Home from './Pages/Home';
@@ -22,6 +20,8 @@ import Footer from './Pages/Footer';
 //Auth
 import Register from './Auth/Register';
 import Login from './Auth/Login';
+import ForgotPassword from './Auth/ForgotPassword';
+import ResetPassword from './Auth/ResetPassword';
 import Users from './Auth/Users';
 //DashBoards
 import AdminDashboard from './DashBoards/AdminDashboard';
@@ -40,12 +40,11 @@ import CreateCourseForm from './Course/CreateCourseForm';
 //Lessons
 import LessonList from './Lessons/LessonList';
 import CreateLesson from './Lessons/CreateLesson';
-import LessonCompletionReport from './Lessons/LessonCompletionReport';
+import LessonEditForm from './Lessons/LessonEditForm';
 import LessonDetailed from './Lessons/LessonDetailed';
 //Assignments
 import AssignmentList from './Assignment/AssignmentList';
 import CreateAssignmentForm from './Assignment/CreateAssignmentForm';
-import EditAssignmentForm from './Assignment/EditAssignmentForm';
 //Assignment-Submission
 import SubmissionForm from './Assignment/SubmissionForm';
 import SubmissionList from './Assignment/SubmissionList';
@@ -56,12 +55,8 @@ import EditQuizForm from './Quiz/EditQuizForm';
 import QuizSubmissionForm from './Quiz/QuizSubmissionForm';
 import QuizSubmissionList from './Quiz/QuizSubmissionList';
 //Payments
-import PaymentForm from './Payment/PaymentForm';
 import PaymentPage from './Payment/PaymentPage';
-//Query
-import Query from './Query/Query';
 //Progress Report
-import StudentProgressReport from './DashBoards/StudentProgressReport'
 import CourseProgress from './DashBoards/CourseProgress';
 
 function App() {
@@ -73,59 +68,53 @@ function App() {
           <QuizProvider>
             <EnrollmentProvider>
               <AssignmentProvider>
-                  {/* <AssignmentSubmissionProvider> */}
-                    <QueryProvider>
-                  <Router>
-                    <Header />
-                    <div className='App asap-bold'>
-                      <Routes>
-                        <Route path='/' element={<Home />} />
-                        <Route path='/Home' element={<Home />} />
-                        <Route path='/About' element={<About />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path='/courses' element={<CourseList />} />
-                        {isAuthenticated ? (
-                          <>
-                            <Route path='/profile' element={<Profile />} />
-                            <Route path='/users-details' element={<Users />} />
-                            <Route path='/admin-dashboard' element={<AdminDashboard />} />
-                            <Route path='/instructor-dashboard' element={<InstructorDashBoard />} />
-                            <Route path='/student-dashboard' element={<StudentDashboard />} />
-                            <Route path='/courses/:courseId' element={<CourseDetails />} />
-                            <Route path='/create-course' element={<CreateCourseForm />} />
-                            <Route path='/course-edit/:courseId' element={<CourseEditForm />} />
-                            <Route path='/enroll/:courseId' element={<EnrollmentForm />} />
-                            <Route path='/enroll' element={<EnrollmentList />} />
-                            <Route path='/enroll-details' element={<EnrollmentDetails />} />
-                            <Route path='/enroll-edit/:enrollmentId' element={<EnrollmentEditForm />} />
-                            <Route path='/assignments/:courseId' element={<AssignmentList />} />
-                            <Route path='/create-assignment/:courseId' element={<CreateAssignmentForm />} />
-                            {/* <Route path='/assignments-edit/:assignmentId' element={<EditAssignmentForm />} /> */}
-                            <Route path='/submit/:assignmentId' element={<SubmissionForm />} />
-                            <Route path='/submissionList/:assignmentId' element={<SubmissionList />} />
-                            <Route path='/quizzes/:courseId' element={<QuizList />} />
-                            <Route path='/create-quiz/:courseId' element={<CreateQuizForm />} />
-                            <Route path='/quiz-edit/:quizId' element={<EditQuizForm />} />
-                            <Route path='/quiz-submission/:quizId' element={<QuizSubmissionForm />} />
-                            <Route path='//quiz-submission-list/:quizId' element={<QuizSubmissionList />} />
-                            <Route path='/payment/:enrollmentId' element={<PaymentPage />} />
-                            {/* <Route path='/payment-form' element={<PaymentForm />} /> */}
-                            <Route path='/query' element={<Query />} />
-                            {/* <Route path='/progress-report' element={<StudentProgressReport />} /> */}
-                            <Route path='/lessons/:courseId' element={<LessonList />}/>
-                            <Route path='/create-lesson/:courseId' element={<CreateLesson />}/>
-                            <Route path='/lesson-report/:courseId' element={<LessonCompletionReport />}/>
-                            <Route path='/lesson-detailed/:lessonId' element={<LessonDetailed />}/>
-                            <Route path='/progress-report/:courseId' element={<CourseProgress />}/>
-                          </>
-                        ) : (<Route path="*" element={<Navigate to="/login" />} />)}
-                      </Routes>
-                    </div>
-                    <Footer />
-                  </Router>
-                  </QueryProvider>
-                {/* </AssignmentSubmissionProvider> */}
+                <Router>
+                  <Header />
+                  <div className='App asap-bold'>
+                    <Routes>
+                      <Route path='/' element={<Home />} />
+                      <Route path='/Home' element={<Home />} />
+                      <Route path='/About' element={<About />} />
+                      <Route path="/register" element={<Register />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path='/forgot-password' element={<ForgotPassword />} />
+                      <Route path='/reset-password/:token' element={<ResetPassword />} />
+                      <Route path='/courses' element={<CourseList />} />
+                      {isAuthenticated ? (
+                        <>
+                          <Route path='/profile' element={<Profile />} />
+                          <Route path='/users-details' element={<Users />} />
+                          <Route path='/admin-dashboard' element={<AdminDashboard />} />
+                          <Route path='/instructor-dashboard' element={<InstructorDashBoard />} />
+                          <Route path='/student-dashboard' element={<StudentDashboard />} />
+                          <Route path='/courses/:courseId' element={<CourseDetails />} />
+                          <Route path='/create-course' element={<CreateCourseForm />} />
+                          <Route path='/course-edit/:courseId' element={<CourseEditForm />} />
+                          <Route path='/enroll/:courseId' element={<EnrollmentForm />} />
+                          <Route path='/enroll' element={<EnrollmentList />} />
+                          <Route path='/enroll-details' element={<EnrollmentDetails />} />
+                          <Route path='/enroll-edit/:enrollmentId' element={<EnrollmentEditForm />} />
+                          <Route path='/assignments/:courseId' element={<AssignmentList />} />
+                          <Route path='/create-assignment/:courseId' element={<CreateAssignmentForm />} />
+                          <Route path='/submit/:assignmentId' element={<SubmissionForm />} />
+                          <Route path='/submissionList/:assignmentId' element={<SubmissionList />} />
+                          <Route path='/quizzes/:courseId' element={<QuizList />} />
+                          <Route path='/create-quiz/:courseId' element={<CreateQuizForm />} />
+                          <Route path='/quiz-edit/:quizId' element={<EditQuizForm />} />
+                          <Route path='/quiz-submission/:quizId' element={<QuizSubmissionForm />} />
+                          <Route path='//quiz-submission-list/:quizId' element={<QuizSubmissionList />} />
+                          <Route path='/payment/:enrollmentId' element={<PaymentPage />} />
+                          <Route path='/lessons/:courseId' element={<LessonList />} />
+                          <Route path='/create-lesson/:courseId' element={<CreateLesson />} />
+                          <Route path='/edit-lesson/:lessonId' element={<LessonEditForm />} />
+                          <Route path='/lesson-detailed/:lessonId' element={<LessonDetailed />} />
+                          <Route path='/progress-report/:courseId' element={<CourseProgress />} />
+                        </>
+                      ) : (<Route path="*" element={<Navigate to="/login" />} />)}
+                    </Routes>
+                  </div>
+                  <Footer />
+                </Router>
               </AssignmentProvider>
             </EnrollmentProvider>
           </QuizProvider>

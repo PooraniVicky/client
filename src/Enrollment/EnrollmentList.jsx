@@ -64,7 +64,7 @@ const EnrollmentList = () => {
     const filteredEnrollments = sortedEnrollments.filter((enrollment) =>
         enrollment.user && // Ensure enrollment.user is not null or undefined
         (`${enrollment.user.firstName} ${enrollment.user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        enrollment.course.title.toLowerCase().includes(searchTerm.toLowerCase()))
+            enrollment.course.title.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     return (

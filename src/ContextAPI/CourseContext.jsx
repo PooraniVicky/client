@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from 'react';
-import axios from 'axios'; 
+import axios from 'axios';
 
 export const CourseContext = createContext();
 
@@ -8,24 +8,24 @@ export const CourseProvider = ({ children }) => {
     const [currentCourse, setCurrentCourse] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-const [message, setMessage] = useState();
-    
-      const fetchCourses = async () => {
+    const [message, setMessage] = useState();
+
+    const fetchCourses = async () => {
         setLoading(true);
         try {
-          const response = await axios.get('http://localhost:4000/apiCourses');
-          setCourses(response.data);
-          setLoading(false);
+            const response = await axios.get('http://localhost:4000/apiCourses');
+            setCourses(response.data);
+            setLoading(false);
         } catch (err) {
-          if (err.response && err.response.status === 401) {
-            setError('Unauthorized. Please log in.');
-            // Add logic to handle unauthorized access (e.g., redirect to login)
-          } else {
-            setError(err.message || 'An error occurred.');
-          }
-          setLoading(false);
+            if (err.response && err.response.status === 401) {
+                setError('Unauthorized. Please log in.');
+                // Add logic to handle unauthorized access (e.g., redirect to login)
+            } else {
+                setError(err.message || 'An error occurred.');
+            }
+            setLoading(false);
         }
-      };
+    };
 
     // Fetch a single course by ID
     const fetchCourseById = async (courseId) => {
@@ -91,7 +91,7 @@ const [message, setMessage] = useState();
     const updateCourse = async (courseId, updatedData, mediaFiles = []) => {
         setLoading(true);
         try {
-          
+
             const formData = new FormData();
             Object.keys(updatedData).forEach((key) => {
                 formData.append(key, updatedData[key]);
@@ -101,15 +101,14 @@ const [message, setMessage] = useState();
                     formData.append('media', file);
                 }
             }
-            
-    console.log("Images:", mediaFiles)
+
             const response = await axios.put(`http://localhost:4000/apiCourses/${courseId}`, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'multipart/form-data',
                 },
             });
-    
+
             const updatedCourses = courses.map(course => course._id === courseId ? response.data : course);
             setCourses(updatedCourses);
             setLoading(false);
@@ -119,27 +118,28 @@ const [message, setMessage] = useState();
             setLoading(false);
             console.error("Error:", err);
         }
-    }; 
+    };
 
-// Delete a course by ID
-const deleteCourse = async (courseId) => {
-    setLoading(true);
-    try {
-        await axios.delete(`http://localhost:4000/apiCourses/${courseId}`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-        });
-        const updatedCourses = courses.filter((course) => course._id !== courseId);
-        setCourses(updatedCourses);
-        setLoading(false);
-    } catch (err) {
-        setError(err.message);
-        setLoading(false);
-    }
-};
+    // Delete a course by ID
+    const deleteCourse = async (courseId) => {
+        setLoading(true);
+        try {
+            await axios.delete(`http://localhost:4000/apiCourses/${courseId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            const updatedCourses = courses.filter((course) => course._id !== courseId);
+            setCourses(updatedCourses);
+            setLoading(false);
+        } catch (err) {
+            setError(err.message);
+            setLoading(false);
+        }
+    };
     return (
-        <CourseContext.Provider value={{ courses,
+        <CourseContext.Provider value={{
+            courses,
             currentCourse,
             fetchCourses,
             fetchCourseById,
@@ -149,7 +149,7 @@ const deleteCourse = async (courseId) => {
             loading,
             error,
             message
-            }}>
+        }}>
             {children}
         </CourseContext.Provider>
     );

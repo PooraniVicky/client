@@ -7,7 +7,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="d-flex">
-        
+
       <Users />
     </div>
   );

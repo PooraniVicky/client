@@ -16,14 +16,14 @@ export const EnrollmentProvider = ({ children }) => {
         setError(null); // Clear previous errors
         try {
             const token = localStorage.getItem('token');
-    
+
             const response = await axios.get('http://localhost:4000/apiEnrollments', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
             });
-    
+
             if (response.data && Array.isArray(response.data.enrollments)) {
                 setEnrollments(response.data.enrollments);
             } else {
@@ -37,11 +37,7 @@ export const EnrollmentProvider = ({ children }) => {
             setLoading(false);
         }
     };
-    // useEffect(() => {
-    //     fetchEnrollments();
-    // }, []);
-
-        // Fetch all enrollments for a specific course
+    // Fetch all enrollments for a specific course
     const fetchEnrollmentsByCourse = async (courseId) => {
         setLoading(true);
         setError(null);
@@ -59,8 +55,8 @@ export const EnrollmentProvider = ({ children }) => {
         }
     };
 
-// get enrollments for the user
- const fetchEnrollmentByUser = async (userId) => {
+    // get enrollments for the user
+    const fetchEnrollmentByUser = async (userId) => {
 
         try {
             const response = await axios.get(`http://localhost:4000/apiEnrollments/${userId}`, {
@@ -76,7 +72,7 @@ export const EnrollmentProvider = ({ children }) => {
         }
     };
 
-    
+
     // Fetch all enrollments By Id
     const fetchEnrollmentsById = async (enrollmentId) => {
         setLoading(true);
@@ -129,7 +125,7 @@ export const EnrollmentProvider = ({ children }) => {
                     'Content-Type': 'application/json',
                 },
             });
-    
+
             const updatedEnrollments = enrollments.map(enrollment =>
                 enrollment._id === enrollmentId ? response.data : enrollment
             );
@@ -146,11 +142,11 @@ export const EnrollmentProvider = ({ children }) => {
             console.error("Enroll Updating Error:", err);
         }
     };
-    
 
 
-       // Delete a specific enrollment by ID
-       const deleteEnrollment = async ( enrollmentId) => {
+
+    // Delete a specific enrollment by ID
+    const deleteEnrollment = async (enrollmentId) => {
         setLoading(true);
         setError(null);
         try {

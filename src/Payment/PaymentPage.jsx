@@ -3,13 +3,15 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { message } from "antd";
 import { Container, Card, CardActionArea, CardContent, CardMedia, Typography, Button } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 // Load your publishable key from Stripe
 const stripePromise = loadStripe("pk_test_51PcnfQKiN6cZCYZsIyztW2luLdhmTftFc7mncXf21z9d9EV6X47DcJF8RSCfDbmsCLNruTY10eng8JLlICKNXeRI00TobzzP6n");
 
-const PaymentPage = ({ amount, onSuccess }) => {
-    const { enrollmentId } = useParams(); // Call useParams as a function
+const PaymentPage = ({ onSuccess = () => { } }) => {
+    const { enrollmentId } = useParams();
+    const location = useLocation();
+    const price = location.state?.price;
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
@@ -17,8 +19,8 @@ const PaymentPage = ({ amount, onSuccess }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!stripe || !elements || !enrollmentId) {
-            message.error('Enrollment ID is missing.');
+        if (!stripe || !elements || !enrollmentId || !price) {
+            message.error('Enrollment ID or price is missing.');
             setLoading(false);
             return;
         }
@@ -39,7 +41,7 @@ const PaymentPage = ({ amount, onSuccess }) => {
                 return;
             }
 
-            const amountToSend = amount ? parseInt(amount * 100, 10) : 100; // Ensure amount is defined
+            const amountToSend = price; // Convert to cents
 
             const response = await fetch(`http://localhost:4000/apiPayments/payment/${enrollmentId}`, {
                 method: 'POST',
@@ -48,9 +50,9 @@ const PaymentPage = ({ amount, onSuccess }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    paymentMethodId: paymentMethod.id,
+                    payment_method_id: paymentMethod.id,
                     amount: amountToSend,
-                    enrollmentId,
+                    enrollment_id: enrollmentId,
                 }),
             });
 
@@ -64,7 +66,7 @@ const PaymentPage = ({ amount, onSuccess }) => {
                 message.error(paymentResult.error.message);
             } else {
                 message.success('Payment successful!');
-                onSuccess(paymentResult);
+                onSuccess(paymentResult); // Call the success handler
             }
         } catch (err) {
             console.error('Payment Error:', err);

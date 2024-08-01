@@ -8,7 +8,7 @@ import { message } from 'antd';
 
 const CreateCourseForm = () => {
     const { createCourse, fetchCourses } = useContext(CourseContext);
-    const { users, fetchInstructors, instructors: fetchedInstructors  } = useContext(AuthContext);
+    const { users, fetchInstructors, instructors: fetchedInstructors } = useContext(AuthContext);
     const [mediaFiles, setMediaFiles] = useState([]);
     const [instructors, setInstructors] = useState([]);
     const navigate = useNavigate();
@@ -40,14 +40,14 @@ const CreateCourseForm = () => {
             }
         };
 
-        getInstructors(); // Fetch instructors on component mount
+        getInstructors();
     }, []);
 
     useEffect(() => {
         if (fetchedInstructors) {
             setInstructors(fetchedInstructors);
         }
-    }, [fetchedInstructors]);
+    }, []);
 
     const handleSubmit = async (values, { setSubmitting, resetForm }) => {
         try {
@@ -55,7 +55,7 @@ const CreateCourseForm = () => {
             resetForm(initialValues);
             message.success("Course Created Successfully..!")
             setMediaFiles([]);
-            navigate('/courses')
+            navigate(-1)
             fetchCourses();
         } catch (error) {
             console.error('Error creating course:', error);
@@ -145,8 +145,8 @@ const CreateCourseForm = () => {
                                                 {isSubmitting ? 'Creating Course...' : 'Create Course'}
                                             </button>
                                             <button className="btn btn-secondary mt-2 asap-bold" onClick={() => navigate('/all-courses')}>
-                                    Back
-                                </button>
+                                                Back
+                                            </button>
                                         </Form>
                                     )}
                                 </Formik>
