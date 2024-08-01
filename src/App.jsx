@@ -15,7 +15,6 @@ import { QuizProvider } from './ContextAPI/QuizContext';
 import Home from './Pages/Home';
 import About from './Pages/About';
 import Header from './Pages/Header';
-import Profile from './Pages/Profile';
 import Footer from './Pages/Footer';
 //Auth
 import Register from './Auth/Register';
