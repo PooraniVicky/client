@@ -4,10 +4,11 @@ import { Elements, useStripe, useElements, CardElement } from "@stripe/react-str
 import { message } from "antd";
 import { Container, Card, CardActionArea, CardContent, CardMedia, Typography, Button } from "@mui/material";
 import { useParams, useLocation } from "react-router-dom";
-import axiosInstance from '../Services/axiosConfig'; // Ensure the path is correct
+import axiosInstance from '../Services/axiosConfig'; 
 
 // Load your publishable key from Stripe
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe("pk_test_51PcnfQKiN6cZCYZsIyztW2luLdhmTftFc7mncXf21z9d9EV6X47DcJF8RSCfDbmsCLNruTY10eng8JLlICKNXeRI00TobzzP6n");
+
 
 const PaymentPage = ({ onSuccess = () => { } }) => {
     const { enrollmentId } = useParams();
