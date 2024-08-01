@@ -1,6 +1,5 @@
 import React, { createContext, useState } from 'react';
-import axios from 'axios';
-
+import axiosInstance from '../Services/axiosConfig';
 // Create Context
 export const AssignmentContext = createContext();
 
@@ -18,12 +17,7 @@ export const AssignmentProvider = ({ children }) => {
     const fetchAssignmentsByCourseId = async (courseId) => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4000/apiAssignments/${courseId}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.get(`/apiAssignments/${courseId}`);
             setAssignments(response.data.assignments || []);
             setAssignmentCount(response.data.assignments.length || 0);
             setSubmissions(response.data.submissions || []);
@@ -42,12 +36,7 @@ export const AssignmentProvider = ({ children }) => {
 
     const addAssignment = async (courseId, assignmentData) => {
         try {
-            const response = await axios.post(`http://localhost:4000/apiAssignments/${courseId}`, assignmentData, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.post(`/apiAssignments/${courseId}`, assignmentData);
             setAssignments(prevAssignments => [...prevAssignments, response.data]);
         } catch (error) {
             console.error('Error adding assignment:', error);
@@ -56,12 +45,7 @@ export const AssignmentProvider = ({ children }) => {
 
     const deleteAssignment = async (assignmentId) => {
         try {
-            await axios.delete(`http://localhost:4000/apiAssignments/${assignmentId}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            await axiosInstance.delete(`/apiAssignments/${assignmentId}`);
             setAssignments(prevAssignments => prevAssignments.filter(assignment => assignment._id !== assignmentId));
         } catch (error) {
             console.error('Error deleting assignment:', error);
@@ -71,12 +55,7 @@ export const AssignmentProvider = ({ children }) => {
     const fetchAssignmentByAssignmentId = async (assignmentId) => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4000/apiAssignments/assignment/${assignmentId}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.get(`/apiAssignments/assignment/${assignmentId}`);
             // console.log('Full response:', response);
             // console.log('Fetched assignment data:', response.data);
 
@@ -97,12 +76,7 @@ export const AssignmentProvider = ({ children }) => {
 
     const updateAssignment = async (assignmentId, updatedAssignment) => {
         try {
-            const response = await axios.put(`http://localhost:4000/apiAssignments/${assignmentId}`, updatedAssignment, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.put(`/apiAssignments/${assignmentId}`, updatedAssignment);
             setAssignments(prevAssignments => prevAssignments.map(assignment =>
                 assignment._id === assignmentId ? response.data : assignment
             ));
@@ -113,12 +87,7 @@ export const AssignmentProvider = ({ children }) => {
 
     const addSubmission = async (assignmentId, submissionUrl) => {
         try {
-            const response = await axios.post(`http://localhost:4000/apiAssignments/submit/${assignmentId}`, { submissionUrl }, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.post(`/apiAssignments/submit/${assignmentId}`, { submissionUrl });
             setSubmissions(prevSubmissions => [...prevSubmissions, response.data]);
         } catch (error) {
             console.error('Error adding submission:', error);
@@ -130,12 +99,7 @@ export const AssignmentProvider = ({ children }) => {
         console.log('Deleting submission with ID:', submissionId, 'for assignment:', assignmentId);
 
         try {
-            await axios.delete(`http://localhost:4000/apiAssignments/submission/${assignmentId}/${submissionId}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            await axiosInstance.delete(`/apiAssignments/submission/${assignmentId}/${submissionId}`);
             setSubmissions(prevSubmissions => prevSubmissions.filter(submission => submission._id !== submissionId));
         } catch (error) {
             console.error('Error deleting submission:', error);
@@ -145,12 +109,7 @@ export const AssignmentProvider = ({ children }) => {
 
     const updateSubmission = async (submissionId, updatedSubmission) => {
         try {
-            const response = await axios.put(`http://localhost:4000/apiAssignments/submission/${submissionId}`, updatedSubmission, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.put(`/apiAssignments/submission/${submissionId}`, updatedSubmission);
             setSubmissions(prevSubmissions => prevSubmissions.map(submission =>
                 submission._id === submissionId ? response.data : submission
             ));
@@ -161,12 +120,7 @@ export const AssignmentProvider = ({ children }) => {
 
     const gradeSubmission = async (assignmentId, submissionId, grade, comments) => {
         try {
-            const response = await axios.put(`http://localhost:4000/apiAssignments/submission/${assignmentId}/${submissionId}/grade`, { grade, comments }, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.put(`/apiAssignments/submission/${assignmentId}/${submissionId}/grade`, { grade, comments });
             setAssignments(prevAssignments =>
                 prevAssignments.map(assignment =>
                     assignment._id === assignmentId

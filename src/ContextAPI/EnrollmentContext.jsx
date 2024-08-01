@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../Services/axiosConfig';
 
 export const EnrollmentContext = createContext();
 
@@ -17,12 +17,7 @@ export const EnrollmentProvider = ({ children }) => {
         try {
             const token = localStorage.getItem('token');
 
-            const response = await axios.get('http://localhost:4000/apiEnrollments', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.get('/apiEnrollments');
 
             if (response.data && Array.isArray(response.data.enrollments)) {
                 setEnrollments(response.data.enrollments);
@@ -42,11 +37,7 @@ export const EnrollmentProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get(`http://localhost:4000/apiEnrollments/${courseId}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            const response = await axiosInstance.get(`/apiEnrollments/${courseId}`);
             setEnrollments(response.data || []);
             setLoading(false);
         } catch (err) {
@@ -59,11 +50,7 @@ export const EnrollmentProvider = ({ children }) => {
     const fetchEnrollmentByUser = async (userId) => {
 
         try {
-            const response = await axios.get(`http://localhost:4000/apiEnrollments/${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            const response = await axiosInstance.get(`/apiEnrollments/${userId}`);
             setEnrollments(response.data);
             fetchEnrollments();
         } catch (error) {
@@ -78,11 +65,7 @@ export const EnrollmentProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get(`http://localhost:4000/apiEnrollments/${enrollmentId}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            const response = await axiosInstance.get(`/apiEnrollments/${enrollmentId}`);
             setCurrentEnrollment(response.data || []);
             setLoading(false);
         } catch (err) {
@@ -97,12 +80,7 @@ export const EnrollmentProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.post(`http://localhost:4000/apiEnrollments/${courseId}`, enrollmentData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            const response = await axiosInstance.post(`/apiEnrollments/${courseId}`, enrollmentData);
             setLoading(false);
             setMessage('Enrollment created successfully!');
             fetchEnrollments(); // Fetch updated enrollments after creating a new one
@@ -119,12 +97,7 @@ export const EnrollmentProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.put(`http://localhost:4000/apiEnrollments/${enrollmentId}`, updatedData, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.put(`/apiEnrollments/${enrollmentId}`, updatedData);
 
             const updatedEnrollments = enrollments.map(enrollment =>
                 enrollment._id === enrollmentId ? response.data : enrollment
@@ -150,11 +123,7 @@ export const EnrollmentProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            await axios.delete(`http://localhost:4000/apiEnrollments/${enrollmentId}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            await axiosInstance.delete(`/apiEnrollments/${enrollmentId}`);
             const updatedEnrollments = enrollments.filter(enrollment => enrollment._id !== enrollmentId);
             setEnrollments(updatedEnrollments);
             setLoading(false);

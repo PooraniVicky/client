@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../Services/axiosConfig';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
@@ -28,7 +28,7 @@ const Register = () => {
   const onSubmit = async (values, { setSubmitting }) => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:4000/apiUsers/register', values);
+      const response = await axiosInstance.post('/apiUsers/register', values);
       message.success('Registration successful');
       navigate('/login');
     } catch (error) {

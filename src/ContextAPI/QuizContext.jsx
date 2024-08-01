@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../Services/axiosConfig';
 
 export const QuizContext = createContext();
 
@@ -19,12 +19,7 @@ export const QuizProvider = ({ children }) => {
                 throw new Error('Course ID is not provided');
             }
 
-            const response = await axios.get(`http://localhost:4000/apiQuizzes/course/${courseId}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            const response = await axiosInstance.get(`/apiQuizzes/course/${courseId}`);
 
             setQuizzes(response.data.quizzes);
             setTotalQuizCount(response.data.count);
@@ -41,12 +36,7 @@ export const QuizProvider = ({ children }) => {
 
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4000/apiQuizzes/${quizId}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.get(`/apiQuizzes/${quizId}`);
 
             // Log the full response object and the specific quiz data for debugging
             // console.log('Full response:', response);
@@ -75,12 +65,7 @@ export const QuizProvider = ({ children }) => {
 
     const createQuiz = async (courseId, quizData) => {
         try {
-            const response = await axios.post(`http://localhost:4000/apiQuizzes/${courseId}`, quizData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            const response = await axiosInstance.post(`/apiQuizzes/${courseId}`, quizData);
             setQuizzes(prevQuizzes => [...prevQuizzes, response.data]);
             return response.data;
         } catch (error) {
@@ -91,12 +76,7 @@ export const QuizProvider = ({ children }) => {
 
     const updateQuiz = async (quizId, quizData) => {
         try {
-            const response = await axios.put(`http://localhost:4000/apiQuizzes/${quizId}`, quizData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            const response = await axiosInstance.put(`/apiQuizzes/${quizId}`, quizData);
             setQuizzes((prevQuizzes) =>
                 prevQuizzes.map((quiz) =>
                     quiz._id === quizId ? response.data : quiz
@@ -111,12 +91,7 @@ export const QuizProvider = ({ children }) => {
 
     const deleteQuiz = async (quizId) => {
         try {
-            await axios.delete(`http://localhost:4000/apiQuizzes/${quizId}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            await axiosInstance.delete(`/apiQuizzes/${quizId}`);
             setQuizzes(quizzes.filter((quiz) => quiz._id !== quizId));
         } catch (error) {
             console.error('Error deleting quiz:', error);
@@ -125,16 +100,9 @@ export const QuizProvider = ({ children }) => {
 
     const updateQuizGrade = async (quizId, answers) => {
         try {
-            const response = await axios.post(
-                `http://localhost:4000/apiQuizzes/${quizId}/grade`,
-                { answers },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                }
-            );
+            const response = await axiosInstance.post(
+                `/apiQuizzes/${quizId}/grade`,
+                { answers });
             const { score } = response.data;
             setTotalQuizGrade(score); // Update totalQuizGrade state with the calculated score
             return response.data;
@@ -148,12 +116,7 @@ export const QuizProvider = ({ children }) => {
     const fetchTotalQuizGrade = async (courseId) => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:4000/apiQuizzes/totalGrade/${courseId}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axiosInstance.get(`/apiQuizzes/totalGrade/${courseId}`);
             console.log("Total Quiz Grade:", response.data.totalGrade);
             setTotalQuizGrade(response.data.totalGrade || 0);
         } catch (error) {
@@ -166,7 +129,7 @@ export const QuizProvider = ({ children }) => {
     const deleteSubmission = async (submissionId) => {
         setLoading(true);
         try {
-            await axios.delete(`http://localhost:4000/apiQuizzes/submissions/${submissionId}`, {
+            await axiosInstance.delete(`/apiQuizzes/submissions/${submissionId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }

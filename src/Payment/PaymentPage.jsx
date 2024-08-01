@@ -4,14 +4,15 @@ import { Elements, useStripe, useElements, CardElement } from "@stripe/react-str
 import { message } from "antd";
 import { Container, Card, CardActionArea, CardContent, CardMedia, Typography, Button } from "@mui/material";
 import { useParams, useLocation } from "react-router-dom";
+import axiosInstance from '../Services/axiosConfig'; // Ensure the path is correct
 
 // Load your publishable key from Stripe
-const stripePromise = loadStripe("pk_test_51PcnfQKiN6cZCYZsIyztW2luLdhmTftFc7mncXf21z9d9EV6X47DcJF8RSCfDbmsCLNruTY10eng8JLlICKNXeRI00TobzzP6n");
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 const PaymentPage = ({ onSuccess = () => { } }) => {
     const { enrollmentId } = useParams();
     const location = useLocation();
-    const price = location.state?.price;
+    const price = location.state?.price; // Ensure price is in dollars
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
@@ -41,32 +42,24 @@ const PaymentPage = ({ onSuccess = () => { } }) => {
                 return;
             }
 
-            const amountToSend = price; // Convert to cents
+            const amountToSend = Math.round(price * 100); // Convert to cents
 
-            const response = await fetch(`http://localhost:4000/apiPayments/payment/${enrollmentId}`, {
-                method: 'POST',
+            const response = await axiosInstance.post(`/apiPayments/payment/${enrollmentId}`, {
+                payment_method_id: paymentMethod.id,
+                amount: amountToSend,
+                enrollment_id: enrollmentId,
+            }, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    payment_method_id: paymentMethod.id,
-                    amount: amountToSend,
-                    enrollment_id: enrollmentId,
-                }),
             });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok.');
-            }
-
-            const paymentResult = await response.json();
-
-            if (paymentResult.error) {
-                message.error(paymentResult.error.message);
+            if (response.data.error) {
+                message.error(response.data.error.message);
             } else {
                 message.success('Payment successful!');
-                onSuccess(paymentResult); // Call the success handler
+                onSuccess(response.data); // Call the success handler
             }
         } catch (err) {
             console.error('Payment Error:', err);

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../Services/axiosConfig';
 
 export const AuthContext = createContext();
 
@@ -17,13 +17,7 @@ export const AuthProvider = ({ children }) => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://localhost:4000/apiUsers/users', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-
+            const response = await axiosInstance.get('/apiUsers/users');
             if (response.data && Array.isArray(response.data)) {
                 setUsersDetails(response.data);
                 //console.log("Users Details:", response.data); // Check data format
@@ -41,9 +35,7 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                const response = await axios.get('http://localhost:4000/apiUsers/user/details', {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+                const response = await axiosInstance.get('/apiUsers/user/details');
                 setUsers(response.data);
             } catch (error) {
                 console.error('Error fetching user details:', error);
@@ -57,11 +49,7 @@ export const AuthProvider = ({ children }) => {
     const updateUserDetails = async (updatedDetails) => {
         setLoading(true);
         try {
-            const response = await axios.put('http://localhost:4000/apiUsers/user/update', updatedDetails, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            const response = await axiosInstance.put('/apiUsers/user/update', updatedDetails);
             setUsers(response.data);
         } catch (error) {
             console.error("Error updating user details:", error);
@@ -72,7 +60,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (credentials) => {
         try {
-            const response = await axios.post('http://localhost:4000/apiUsers/login', credentials);
+            const response = await axiosInstance.post('/apiUsers/login', credentials);
             localStorage.setItem('token', response.data.token);
             setUsers(response.data.user);
         } catch (error) {
@@ -87,7 +75,7 @@ export const AuthProvider = ({ children }) => {
     };
     const forgotPassword = async (email) => {
         try {
-            const response = await axios.post('http://localhost:4000/apiUsers/forgot-password', { email });
+            const response = await axiosInstance.post('/apiUsers/forgot-password', { email });
             return { success: true, message: response.data.message };
         } catch (error) {
             return { success: false, message: error.response ? error.response.data.message : 'Error occurred' };
@@ -96,7 +84,7 @@ export const AuthProvider = ({ children }) => {
 
     const resetPassword = async (token, password) => {
         try {
-            const response = await axios.post(`http://localhost:4000/apiUsers/reset-password/${token}`, { password });
+            const response = await axios.post(`/apiUsers/reset-password/${token}`, { password });
             return { success: true, message: response.data.message };
         } catch (error) {
             console.error(error);
@@ -112,7 +100,7 @@ export const AuthProvider = ({ children }) => {
     const fetchInstructors = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://localhost:4000/apiUsers/user/instructor', {
+            const response = await axiosInstance.get('/apiUsers/user/instructor', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
