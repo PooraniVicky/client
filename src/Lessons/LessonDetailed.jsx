@@ -5,7 +5,6 @@ import { AuthContext } from '../ContextAPI/AuthContext';
 import { Container, Card, CardBody } from 'react-bootstrap';
 import { Button, Typography } from '@mui/material';
 import { message } from 'antd';
-import YouTubePlayer from './YouTubePlayer'; // Import the YouTubePlayer component
 
 const LessonDetailed = () => {
     const { lessonId } = useParams();
@@ -64,7 +63,6 @@ const LessonDetailed = () => {
                     <Typography variant="body1"><strong>Lesson Description: </strong>{lesson.description}</Typography>
                     <Typography variant="body1"><strong>Lesson Url: </strong><a href={lesson.url} target='_blank' rel="noopener noreferrer">Click Here</a></Typography>
                     {users && (users.role === 'student') && <Typography variant="body1"><strong>Lesson Completion Status: </strong>{completed ? 'completed' : 'pending'}</Typography>}
-                    {users && (users.role === 'student') && <YouTubePlayer url={lesson.url} />} {/* Add the YouTubePlayer component */}
 
                     {users && (users.role === 'student') && <Button
                         variant="outlined"
