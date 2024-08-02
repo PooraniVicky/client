@@ -26,7 +26,7 @@ const Header = () => {
             const filtered = enrollments.filter(enrollment => enrollment.user && enrollment.user._id === users.userId);
             setFilteredEnrollments(filtered);
         }
-    }, [enrollments]);
+    }, [enrollments, users]);
 
     const handleNavigate = (path) => {
         navigate(path);
