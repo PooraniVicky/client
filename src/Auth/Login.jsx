@@ -53,7 +53,7 @@ const Login = () => {
                 }
             }
         }
-    }, []);
+    }, [users, navigate]);
 
     return (
         <div className="container">

@@ -22,13 +22,13 @@ const EnrollmentForm = () => {
         } else {
             console.error("Course ID is undefined in useEffect");
         }
-    }, []);
+    }, [courseId]);
 
     useEffect(() => {
         if (!users) {
             fetchUserDetails();
         }
-    }, []);
+    }, [users, fetchUserDetails]);
 
    
 

@@ -24,7 +24,7 @@ const EnrollmentEditForm = ({ show, handleClose, enrollmentId }) => {
             }
         };
         getEnrollmentData();
-    }, []);
+    }, [enrollmentId]);
 
     // Set initial values when currentEnrollment changes
     useEffect(() => {
