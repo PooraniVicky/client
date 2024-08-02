@@ -68,7 +68,6 @@ export const CourseProvider = ({ children }) => {
             const response = await axios.post('https://server-o2fj.onrender.com/apiCourses', formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
                 },
             });
             // setCourses([...courses, response.data.course]);
@@ -100,7 +99,6 @@ export const CourseProvider = ({ children }) => {
             const response = await axios.put(`https://server-o2fj.onrender.com/apiCourses/${courseId}`, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
                 },
             });
 
