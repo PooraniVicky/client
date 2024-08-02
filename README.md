@@ -146,6 +146,8 @@ View Lesson Completion: Instructors can view details of students who have comple
 ![Forgot Email](./ScreenShot/password%20reset%20mail.png)
 - User enters a new password and confirms it.
 - Backend updates the user's password.
+### Reset Password Page:
+![resetPassword](./ScreenShot/Reset%20Password.png)
 ## Tech Stack
 - Frontend: React.js
 - Backend: Node.js, Express.js

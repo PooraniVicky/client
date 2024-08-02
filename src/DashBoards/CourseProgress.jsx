@@ -57,10 +57,11 @@ const CourseProgress = () => {
 
     return (
         <Container style={{ padding: '30px' }}>
+           
+            <Card >
             <Typography variant="h4" component="h2" className="text-center" style={{ color: 'darkcyan' }}>
             Course Progress
             </Typography>
-            <Card >
             <Box>
                 {/* <Typography variant="h5" gutterBottom>
                     Course Progress
