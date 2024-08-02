@@ -1,6 +1,5 @@
 import React, { createContext, useEffect, useState } from 'react';
-import axiosInstance from '../Services/axiosConfig';
-
+import axios from 'axios';
 export const CourseContext = createContext();
 
 export const CourseProvider = ({ children }) => {
@@ -13,7 +12,11 @@ export const CourseProvider = ({ children }) => {
     const fetchCourses = async () => {
         setLoading(true);
         try {
-            const response = await axiosInstance.get('/apiCourses');
+            const response = await axios.get('https://server-o2fj.onrender.com/apiCourses', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             setCourses(response.data);
             setLoading(false);
         } catch (err) {
@@ -31,7 +34,11 @@ export const CourseProvider = ({ children }) => {
     const fetchCourseById = async (courseId) => {
         setLoading(true);
         try {
-            const response = await axiosInstance.get(`/apiCourses/${courseId}`);
+            const response = await axios.get(`https://server-o2fj.onrender.com/apiCourses/${courseId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             setCurrentCourse(response.data);
             setLoading(false);
         } catch (err) {
@@ -58,7 +65,12 @@ export const CourseProvider = ({ children }) => {
                     formData.append('media', file);
                 }
             }
-            const response = await axiosInstance.post('/apiCourses', formData);
+            const response = await axios.post('https://server-o2fj.onrender.com/apiCourses', formData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
             setCourses([...courses, response.data.course]);
             setLoading(false);
             setMessage("Course Created Successfully..!");
@@ -84,7 +96,12 @@ export const CourseProvider = ({ children }) => {
                 }
             }
 
-            const response = await axiosInstance.put(`/apiCourses/${courseId}`, formData);
+            const response = await axios.put(`https://server-o2fj.onrender.com/apiCourses/${courseId}`, formData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
 
             const updatedCourses = courses.map(course => course._id === courseId ? response.data : course);
             setCourses(updatedCourses);
@@ -101,7 +118,11 @@ export const CourseProvider = ({ children }) => {
     const deleteCourse = async (courseId) => {
         setLoading(true);
         try {
-            await axiosInstance.delete(`/apiCourses/${courseId}`);
+            await axios.delete(`https://server-o2fj.onrender.com/apiCourses/${courseId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             const updatedCourses = courses.filter((course) => course._id !== courseId);
             setCourses(updatedCourses);
             setLoading(false);

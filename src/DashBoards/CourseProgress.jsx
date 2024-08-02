@@ -1,14 +1,14 @@
 import React, { useContext, useEffect } from 'react';
 import { LessonContext } from '../ContextAPI/LessonContext';
-import { AuthContext } from '../ContextAPI/AuthContext'; // Import AuthContext
+import { AuthContext } from '../ContextAPI/AuthContext';
 import { useParams } from 'react-router-dom';
-import { Container, Box, Typography } from '@mui/material';
+import { Container, Card, Box, Typography } from '@mui/material';
 import { Bar } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
 
 const CourseProgress = () => {
     const { courseId } = useParams();
-    const { users } = useContext(AuthContext); // Get user from AuthContext
+    const { users } = useContext(AuthContext); 
     const { lessons, fetchLessonsByCourseId } = useContext(LessonContext);
 
     useEffect(() => {
@@ -57,12 +57,14 @@ const CourseProgress = () => {
 
     return (
         <Container style={{ padding: '30px' }}>
+            <Card >
             <Box>
                 <Typography variant="h5" gutterBottom>
                     Course Progress
                 </Typography>
                 <Bar data={data} options={options} />
             </Box>
+            </Card>
         </Container>
     );
 };

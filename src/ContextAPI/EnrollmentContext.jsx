@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect } from 'react';
-import axiosInstance from '../Services/axiosConfig';
+import React, { createContext, useState } from 'react';
+import axios from 'axios';
 
 export const EnrollmentContext = createContext();
 
@@ -15,9 +15,11 @@ export const EnrollmentProvider = ({ children }) => {
         setLoading(true);
         setError(null); // Clear previous errors
         try {
-            const token = localStorage.getItem('token');
-
-            const response = await axiosInstance.get('/apiEnrollments');
+            const response = await axios.get('https://server-o2fj.onrender.com/apiEnrollments', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
 
             if (response.data && Array.isArray(response.data.enrollments)) {
                 setEnrollments(response.data.enrollments);
@@ -37,7 +39,11 @@ export const EnrollmentProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axiosInstance.get(`/apiEnrollments/${courseId}`);
+            const response = await axios.get(`https://server-o2fj.onrender.com/apiEnrollments/${courseId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             setEnrollments(response.data || []);
             setLoading(false);
         } catch (err) {
@@ -50,7 +56,11 @@ export const EnrollmentProvider = ({ children }) => {
     const fetchEnrollmentByUser = async (userId) => {
 
         try {
-            const response = await axiosInstance.get(`/apiEnrollments/${userId}`);
+            const response = await axios.get(`https://server-o2fj.onrender.com/apiEnrollments/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             setEnrollments(response.data);
             fetchEnrollments();
         } catch (error) {
@@ -65,7 +75,11 @@ export const EnrollmentProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axiosInstance.get(`/apiEnrollments/${enrollmentId}`);
+            const response = await axios.get(`https://server-o2fj.onrender.com/apiEnrollments/${enrollmentId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             setCurrentEnrollment(response.data || []);
             setLoading(false);
         } catch (err) {
@@ -80,7 +94,12 @@ export const EnrollmentProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axiosInstance.post(`/apiEnrollments/${courseId}`, enrollmentData);
+            const response = await axios.post(`https://server-o2fj.onrender.com/apiEnrollments/${courseId}`, enrollmentData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
             setLoading(false);
             setMessage('Enrollment created successfully!');
             fetchEnrollments(); // Fetch updated enrollments after creating a new one
@@ -97,7 +116,12 @@ export const EnrollmentProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axiosInstance.put(`/apiEnrollments/${enrollmentId}`, updatedData);
+            const response = await axios.put(`https://server-o2fj.onrender.com/apiEnrollments/${enrollmentId}`, updatedData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
 
             const updatedEnrollments = enrollments.map(enrollment =>
                 enrollment._id === enrollmentId ? response.data : enrollment
@@ -123,7 +147,11 @@ export const EnrollmentProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            await axiosInstance.delete(`/apiEnrollments/${enrollmentId}`);
+            await axios.delete(`https://server-o2fj.onrender.com/apiEnrollments/${enrollmentId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             const updatedEnrollments = enrollments.filter(enrollment => enrollment._id !== enrollmentId);
             setEnrollments(updatedEnrollments);
             setLoading(false);

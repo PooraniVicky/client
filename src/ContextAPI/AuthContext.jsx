@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axiosInstance from '../Services/axiosConfig';
+import axios from 'axios';
 
 export const AuthContext = createContext();
 
@@ -9,15 +9,17 @@ export const AuthProvider = ({ children }) => {
     const [instructors, setInstructors] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
-    const [message, setMessage] = useState();
 
     const getAllUsers = async () => {
         setLoading(true);
         setError(null);
 
         try {
-            const token = localStorage.getItem('token');
-            const response = await axiosInstance.get('/apiUsers/users');
+            const response = await axios.get('https://server-o2fj.onrender.com/apiUsers/users', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             if (response.data && Array.isArray(response.data)) {
                 setUsersDetails(response.data);
                 //console.log("Users Details:", response.data); // Check data format
@@ -35,7 +37,11 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                const response = await axiosInstance.get('/apiUsers/user/details');
+                const response = await axios.get('https://server-o2fj.onrender.com/apiUsers/user/details', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
                 setUsers(response.data);
             } catch (error) {
                 console.error('Error fetching user details:', error);
@@ -49,7 +55,12 @@ export const AuthProvider = ({ children }) => {
     const updateUserDetails = async (updatedDetails) => {
         setLoading(true);
         try {
-            const response = await axiosInstance.put('/apiUsers/user/update', updatedDetails);
+            const response = await axios.put('https://server-o2fj.onrender.com/apiUsers/user/update', updatedDetails, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
             setUsers(response.data);
         } catch (error) {
             console.error("Error updating user details:", error);
@@ -60,7 +71,12 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (credentials) => {
         try {
-            const response = await axiosInstance.post('/apiUsers/login', credentials);
+            const response = await axios.post('https://server-o2fj.onrender.com/apiUsers/login', credentials, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
             localStorage.setItem('token', response.data.token);
             setUsers(response.data.user);
         } catch (error) {
@@ -75,7 +91,12 @@ export const AuthProvider = ({ children }) => {
     };
     const forgotPassword = async (email) => {
         try {
-            const response = await axiosInstance.post('/apiUsers/forgot-password', { email });
+            const response = await axios.post('https://server-o2fj.onrender.com/apiUsers/forgot-password', { email }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
             return { success: true, message: response.data.message };
         } catch (error) {
             return { success: false, message: error.response ? error.response.data.message : 'Error occurred' };
@@ -84,7 +105,12 @@ export const AuthProvider = ({ children }) => {
 
     const resetPassword = async (token, password) => {
         try {
-            const response = await axios.post(`/apiUsers/reset-password/${token}`, { password });
+            const response = await axios.post(`https://server-o2fj.onrender.com/apiUsers/reset-password/${token}`, { password }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
             return { success: true, message: response.data.message };
         } catch (error) {
             console.error(error);
@@ -100,7 +126,7 @@ export const AuthProvider = ({ children }) => {
     const fetchInstructors = async () => {
         setLoading(true);
         try {
-            const response = await axiosInstance.get('/apiUsers/user/instructor', {
+            const response = await axios.get('https://server-o2fj.onrender.com/apiUsers/user/instructor', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },

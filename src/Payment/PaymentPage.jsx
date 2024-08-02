@@ -4,8 +4,7 @@ import { Elements, useStripe, useElements, CardElement } from "@stripe/react-str
 import { message } from "antd";
 import { Container, Card, CardActionArea, CardContent, CardMedia, Typography, Button } from "@mui/material";
 import { useParams, useLocation } from "react-router-dom";
-import axiosInstance from '../Services/axiosConfig'; 
-
+import axios from 'axios';
 // Load your publishable key from Stripe
 const stripePromise = loadStripe("pk_test_51PcnfQKiN6cZCYZsIyztW2luLdhmTftFc7mncXf21z9d9EV6X47DcJF8RSCfDbmsCLNruTY10eng8JLlICKNXeRI00TobzzP6n");
 
@@ -45,7 +44,7 @@ const PaymentPage = ({ onSuccess = () => { } }) => {
 
             const amountToSend = Math.round(price * 100); // Convert to cents
 
-            const response = await axiosInstance.post(`/apiPayments/payment/${enrollmentId}`, {
+            const response = await axios.post(`https://server-o2fj.onrender.com/apiPayments/payment/${enrollmentId}`, {
                 payment_method_id: paymentMethod.id,
                 amount: amountToSend,
                 enrollment_id: enrollmentId,
