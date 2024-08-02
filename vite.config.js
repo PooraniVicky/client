@@ -9,7 +9,7 @@ export default defineConfig({
         manualChunks: {
           // Define custom chunks for better code-splitting
           'react-vendor': ['react', 'react-dom'],
-          'ui-vendor': ['@mui/material', '@mui/icons-material'],
+          'ui-vendor': ['@mui/material'],
           // Add more custom chunks as needed
         },
       },
