@@ -55,7 +55,7 @@ Manage Quiz Submissions: Admins can view and delete quiz submissions from studen
 ### Quiz Submission List:
 ![Quiz Submission List](./ScreenShot/QuizSubmission%20List.png)
 ## Instructor Functionalities
-### Admin Login Details:
+### Instructor Login Details:
 - Instructor Email Id: instructor@gmail.com
 - Password: Instructor@2024
 ### Course Material Management
