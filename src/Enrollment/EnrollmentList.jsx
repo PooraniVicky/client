@@ -24,7 +24,7 @@ const EnrollmentList = () => {
         } else {
             console.error('Enrollments data is not an array:', enrollments);
         }
-    }, [enrollments]);
+    }, []);
 
     const handleEditEnrollment = (enrollmentId) => {
         setSelectedEnrollmentId(enrollmentId);

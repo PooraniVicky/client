@@ -32,7 +32,7 @@ const EditQuizForm = () => {
     };
 
     fetchQuizData();
-  }, [quizId]);
+  }, []);
 
   const formik = useFormik({
     initialValues: initialValues,

@@ -24,7 +24,7 @@ const EnrollmentEditForm = ({ show, handleClose, enrollmentId }) => {
             }
         };
         getEnrollmentData();
-    }, [enrollmentId]);
+    }, []);
 
     // Set initial values when currentEnrollment changes
     useEffect(() => {
@@ -35,7 +35,7 @@ const EnrollmentEditForm = ({ show, handleClose, enrollmentId }) => {
                 paymentStatus: currentEnrollment.paymentStatus || 'pending',
             });
         }
-    }, [currentEnrollment]);
+    }, []);
 
     const validationSchema = Yup.object({
         qualification: Yup.string().required('Qualification is required'),

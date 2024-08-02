@@ -22,7 +22,7 @@ const CourseList = () => {
 
     useEffect(() => {
         setSortedCourses(courses);
-    }, [courses]);
+    }, []);
 
     const handleEditCourse = (courseId) => {
         setSelectedCourseId(courseId);

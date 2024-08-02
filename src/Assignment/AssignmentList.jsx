@@ -120,38 +120,7 @@ const AssignmentList = () => {
                                             <TableCell align="center">{new Date(assignment.dueDate).toLocaleDateString()}</TableCell>
                                             {users && users.role === 'student' && (
                                                 <React.Fragment>
-                                                    {/* {studentSubmission ? (
-                                                        <>
-                                                            <TableCell align="center">
-                                                                {studentSubmission.createdAt ? new Date(studentSubmission.createdAt).toLocaleDateString() : '-'}
-                                                            </TableCell>
-                                                            <TableCell align="center">{studentSubmission.grade || '-'}</TableCell>
-                                                            <TableCell align="center">{studentSubmission.comments || '-'}</TableCell>
-                                                            <TableCell align="center">
-                                                                <button
-                                                                    className="btn btn-secondary"
-                                                                    onClick={() => handleViewClick(assignment._id)}
-                                                                >
-                                                                    {showSubmissionUrl === assignment._id ? 'Hide URL' : 'View'}
-                                                                </button>
-                                                            </TableCell>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <TableCell align="center">-</TableCell>
-                                                            <TableCell align="center">-</TableCell>
-                                                            <TableCell align="center">-</TableCell>
-                                                            <TableCell align="center">
-                                                                <button
-                                                                    className="btn btn-primary"
-                                                                    onClick={() => setExpandedAssignmentId(assignment._id)}
-                                                                >
-                                                                    Submit
-                                                                </button>
-                                                            </TableCell>
-                                                        </>
-                                                    )} */}
-                                                    {studentSubmission ? (
+                                                  {studentSubmission ? (
                                                         <>
                                                             <TableCell align="center">
                                                                 {studentSubmission.createdAt ? new Date(studentSubmission.createdAt).toLocaleDateString() : '-'}

@@ -22,17 +22,15 @@ const EnrollmentForm = () => {
         } else {
             console.error("Course ID is undefined in useEffect");
         }
-    }, [courseId]);
+    }, []);
 
     useEffect(() => {
         if (!users) {
             fetchUserDetails();
         }
-    }, [users, fetchUserDetails]);
+    }, []);
 
-    // useEffect(() => {
-    //     console.log('Fetched user details:', users); // Log user details to check structure
-    // }, [users]);
+   
 
     const initialValues = {
         qualification: '',
@@ -52,45 +50,7 @@ const EnrollmentForm = () => {
         navigate('/courses');
     };
 
-    // const handlePayNowEnrollment = async (values, setSubmitting) => {
-    //     if (!courseId) {
-    //         message.error("Course ID is undefined.");
-    //         setSubmitting(false);
-    //         return;
-    //     }
-
-    //     const userId = users?.userId;
-
-    //     if (!userId) {
-    //         message.error("User ID is undefined. Please log in again.");
-    //         setSubmitting(false);
-    //         return;
-    //     }
-
-    //     try {
-    //         const enrollmentData = {
-    //             user: userId,
-    //             course: courseId,
-    //             qualification: values.qualification,
-    //             passOutYear: values.passOutYear,
-    //             paymentStatus: 'pending', // Set initial payment status as 'pending'
-    //         };
-
-    //         await createEnrollment(courseId, enrollmentData);
-    //         updateUserDetails({ ...users, enrollStatus: 'enrolled' });
-    //         fetchEnrollments();
-    //         navigate(`/payment/${enrollmentData._id}`);
-    //     } catch (error) {
-    //         console.error('Enrollment Error:', error);
-    //         if (error.response && error.response.data) {
-    //             console.error('Server Response Data:', error.response.data);
-    //         }
-    //         message.error('Enrollment Failed.');
-    //     } finally {
-    //         setSubmitting(false);
-    //     }
-    // };
-
+    
     const handlePayLaterEnrollment = async (values, setSubmitting) => {
         if (!courseId) {
             message.error("Course ID is undefined.");

@@ -17,13 +17,13 @@ const CreateAssignmentForm = () => {
             fetchCourseById(courseId);
             fetchAssignmentsByCourseId(courseId);
         }
-    }, [courseId]);
+    }, []);
 
     useEffect(() => {
         if (courseId) {
             fetchAssignmentsByCourseId(courseId);
         }
-    }, [courseId]);
+    }, []);
 
     const initialValues = {
         title: '',
