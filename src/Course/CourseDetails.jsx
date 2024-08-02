@@ -11,7 +11,7 @@ const CourseDetails = () => {
         if (courseId) {
             fetchCourseById(courseId);
         }
-    }, []);
+    }, [courseId]);
 
 
     return (

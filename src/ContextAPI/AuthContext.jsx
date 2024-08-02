@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [instructors, setInstructors] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
+    const [message, setMessage] = useState();
 
     const getAllUsers = async () => {
         setLoading(true);
@@ -18,6 +19,7 @@ export const AuthProvider = ({ children }) => {
             const response = await axios.get('https://server-o2fj.onrender.com/apiUsers/users', {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
                 },
             });
             if (response.data && Array.isArray(response.data)) {
@@ -40,6 +42,7 @@ export const AuthProvider = ({ children }) => {
                 const response = await axios.get('https://server-o2fj.onrender.com/apiUsers/user/details', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json',
                     },
                 });
                 setUsers(response.data);

@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { message } from "antd";
-import { CardActionArea, CardContent, CardMedia, Typography, Button } from "@mui/material";
+import { Container, Card, CardActionArea, CardContent, CardMedia, Typography, Button } from "@mui/material";
 import { useParams, useLocation } from "react-router-dom";
-import { Container, Card, CardBody } from 'react-bootstrap';
 import axios from 'axios';
 // Load your publishable key from Stripe
 const stripePromise = loadStripe("pk_test_51PcnfQKiN6cZCYZsIyztW2luLdhmTftFc7mncXf21z9d9EV6X47DcJF8RSCfDbmsCLNruTY10eng8JLlICKNXeRI00TobzzP6n");
@@ -72,8 +71,7 @@ const PaymentPage = ({ onSuccess = () => { } }) => {
 
     return (
         <Container>
-        <Card>
-            <CardBody>
+            <Card sx={{ maxWidth: 345 }}>
                 <CardActionArea>
                     <CardMedia
                         component="img"
@@ -100,7 +98,6 @@ const PaymentPage = ({ onSuccess = () => { } }) => {
                         </form>
                     </CardContent>
                 </CardActionArea>
-                </CardBody>
             </Card>
         </Container>
     );
