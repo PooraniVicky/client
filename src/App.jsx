@@ -81,7 +81,6 @@ function App() {
                       <Route path='/courses' element={<CourseList />} />
                       {isAuthenticated ? (
                         <>
-                          <Route path='/profile' element={<Profile />} />
                           <Route path='/users-details' element={<Users />} />
                           <Route path='/admin-dashboard' element={<AdminDashboard />} />
                           <Route path='/instructor-dashboard' element={<InstructorDashBoard />} />
