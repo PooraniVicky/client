@@ -20,7 +20,7 @@ const Users = () => {
 
     const handleDelete = async (userId) => {
         try {
-            await axios.delete(`http://localhost:4000/apiUsers/users/${userId}`, {
+            await axios.delete(`https://server-o2fj.onrender.com/apiUsers/users/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },

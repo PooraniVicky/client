@@ -19,14 +19,14 @@ const Header = () => {
         if (users && users.userId) {
             fetchEnrollmentByUser(users.userId);
         }
-    }, []);
+    }, [users]);
 
     useEffect(() => {
         if (Array.isArray(enrollments) && users && users.userId) {
             const filtered = enrollments.filter(enrollment => enrollment.user && enrollment.user._id === users.userId);
             setFilteredEnrollments(filtered);
         }
-    }, []);
+    }, [enrollments]);
 
     const handleNavigate = (path) => {
         navigate(path);

@@ -17,7 +17,7 @@ const CourseEditForm = ({ show, handleClose, courseId }) => {
         if (show && courseId) {
             fetchCourseById(courseId);
         }
-    }, []);
+    }, [show, courseId]);
 
     useEffect(() => {
         const getInstructors = async () => {
@@ -35,7 +35,7 @@ const CourseEditForm = ({ show, handleClose, courseId }) => {
         if (fetchedInstructors) {
             setInstructors(fetchedInstructors);
         }
-    }, []);
+    }, [fetchedInstructors]);
 
     const initialValues = {
         title: currentCourse?.title || '',
