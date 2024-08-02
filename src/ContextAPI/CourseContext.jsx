@@ -71,13 +71,14 @@ export const CourseProvider = ({ children }) => {
                     'Content-Type': 'application/json',
                 },
             });
-            setCourses([...courses, response.data.course]);
-            setLoading(false);
+            // setCourses([...courses, response.data.course]);
+            setCourses((prevCourses) => [...prevCourses, response.data.course]);
             setMessage("Course Created Successfully..!");
             fetchCourses();
         } catch (err) {
             console.error("Error:", err)
             setError(err.message);
+        }finally{
             setLoading(false);
         }
     };

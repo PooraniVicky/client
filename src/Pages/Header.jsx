@@ -88,7 +88,6 @@ const Header = () => {
                                     Courses
                                 </Nav.Link>
                                 <ul className="navbar-nav me-auto mb-lg-0">
-                                    <Nav.Link as={Link} to="/student-dashboard" className="nav-link">Profile</Nav.Link>
                                     {filteredEnrollments.map(enrollment => (
                                         <React.Fragment key={enrollment._id}>
                                             <Nav.Link as={Link} to={`/assignments/${enrollment.course?._id}`} className="nav-link">Assignments</Nav.Link>
