@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { message } from "antd";
-import { Container, Card, CardActionArea, CardContent, CardMedia, Typography, Button } from "@mui/material";
+import { CardActionArea, CardContent, CardMedia, Typography, Button } from "@mui/material";
+import { Container, Card, } from 'react-bootstrap';
+
 import { useParams, useLocation } from "react-router-dom";
 import axios from 'axios';
 // Load your publishable key from Stripe
